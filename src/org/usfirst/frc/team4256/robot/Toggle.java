@@ -1,0 +1,28 @@
+package org.usfirst.frc.team4256.robot;
+
+import edu.wpi.first.wpilibj.Joystick;
+
+public class Toggle {
+	private Joystick joystick;
+	private int button;
+	private boolean value = false;
+	private boolean lastValue = false;
+	private boolean state = false;
+	
+	
+	public Toggle(Joystick joystick, int button) {
+		this.joystick = joystick;
+		this.button = button;
+	}
+	
+	/**
+	 * Updates and returns the button's toggle state
+	 */
+	public boolean getState() {
+		value = joystick.getRawButton(button);
+		if(value && value!=lastValue)
+			state = !state;
+		lastValue = value;
+		return state;
+	}	
+}
