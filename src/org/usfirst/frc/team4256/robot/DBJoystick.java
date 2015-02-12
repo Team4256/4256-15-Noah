@@ -21,4 +21,17 @@ public class DBJoystick extends Joystick {
 		return (Math.abs(input) <= DEADBAND ? 0 : input);
 	}
 
-}
+	public void runSharedFunctions(DBJoystick xboxgun, int liftbutton, int otherButton) {
+		DBJoystick xboxdrive = null;
+		xboxgun = xboxdrive;
+		xboxdrive = xboxgun;
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+		
+		
+	}
+
+
