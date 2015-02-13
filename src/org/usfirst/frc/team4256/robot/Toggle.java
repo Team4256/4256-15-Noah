@@ -19,7 +19,11 @@ public class Toggle {
 	 * Updates and returns the button's toggle state
 	 */
 	public boolean getState() {
-		value = joystick.getRawButton(button);
+		return getState(joystick);
+	}
+	
+	public boolean getState(Joystick j) {
+		value = j.getRawButton(button);
 		if(value && value!=lastValue)
 			state = !state;
 		lastValue = value;

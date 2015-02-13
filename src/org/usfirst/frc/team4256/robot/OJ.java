@@ -3,6 +3,7 @@ package org.usfirst.frc.team4256.robot;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OJ {
@@ -60,13 +61,19 @@ public class OJ {
     
     public static void runSolenoid(Toggle toggle, DoubleSolenoid solenoid) {
     	if(toggle.getState()) {
-        	solenoid.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
+        	solenoid.set(DoubleSolenoid.Value.kForward);
     	}else{
-    		solenoid.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse);
+    		solenoid.set(DoubleSolenoid.Value.kReverse);
     	}
     }
     
     ////////////////LED////////////////
     
-    
+    public static void runLED(Toggle toggle, Relay led) {
+    	if(toggle.getState()) {
+        	led.set(Relay.Value.kForward);
+    	}else{
+    		led.set(Relay.Value.kReverse);
+    	}
+    }
 }
