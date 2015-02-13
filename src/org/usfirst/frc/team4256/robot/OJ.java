@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OJ {
@@ -43,6 +44,10 @@ public class OJ {
     //config
     public static void configMotorPorts(double testSpeed) {
     	new CANTalon((int) SmartDashboard.getNumber("PORT")).set(testSpeed);
+    }
+    
+    public static void configVictorPorts(double testSpeed) {
+    	new VictorSP ((int) SmartDashboard.getNumber("VICTOR_PORT")).set(testSpeed);
     }
     
     ////////////////SOLENOID////////////////
