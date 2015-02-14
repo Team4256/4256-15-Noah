@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class OJ {
+public class Utility {
 	
 	////////////////MOTOR////////////////
 	
-	public static void runMotor(boolean condition, OJ_Motor motor, double speed) {
+	public static void runMotor(boolean condition, MotorInterface motor, double speed) {
     	if(condition) {
     		motor.set(speed);
     	}else{
@@ -19,7 +19,7 @@ public class OJ {
     	}
     }
 	
-	public static void runMotor(boolean fwdCondition, boolean reverseCondition, OJ_Motor motor, double speed) {
+	public static void runMotor(boolean fwdCondition, boolean reverseCondition, MotorInterface motor, double speed) {
     	if(fwdCondition) {
     		motor.set(speed);
     	}else if(reverseCondition) {
@@ -29,15 +29,15 @@ public class OJ {
     	}
     }
 	
-	public static void runMotor(Joystick j, int button, OJ_Motor motor, double speed) {
+	public static void runMotor(Joystick j, int button, MotorInterface motor, double speed) {
 		runMotor(j.getRawButton(button), motor, speed);
     }
 	
-	public static void runMotor(Joystick j, int fwdButton, int reverseButton, OJ_Motor motor, double speed) {
+	public static void runMotor(Joystick j, int fwdButton, int reverseButton, MotorInterface motor, double speed) {
 		runMotor(j.getRawButton(fwdButton), j.getRawButton(reverseButton), motor, speed);
     }
     
-    public static void runMotor(Toggle toggle, OJ_Motor motor, double speed) {
+    public static void runMotor(Toggle toggle, MotorInterface motor, double speed) {
     	runMotor(toggle.getState(), motor, speed);
     }
     

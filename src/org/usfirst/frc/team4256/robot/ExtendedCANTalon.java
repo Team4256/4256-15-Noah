@@ -2,13 +2,13 @@ package org.usfirst.frc.team4256.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class OJ_CANTalon extends CANTalon implements OJ_Motor {
+public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 	boolean isReversed = false;
 	
-	public OJ_CANTalon(int deviceNumber) {
+	public ExtendedCANTalon(int deviceNumber) {
 		super(deviceNumber);
 	}
-	public OJ_CANTalon(int deviceNumber, int controlPeriodMs) {
+	public ExtendedCANTalon(int deviceNumber, int controlPeriodMs) {
 		super(deviceNumber, controlPeriodMs);
 	}
 	

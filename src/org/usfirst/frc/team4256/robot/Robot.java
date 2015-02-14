@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * functions corresponding to each mode, as described in the IterativeRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the manifest file in the resource
- * directory.
+ * directory. 
  */
 public class Robot extends IterativeRobot {	
     
@@ -24,7 +25,6 @@ public class Robot extends IterativeRobot {
 	DBJoystick xboxgun = new DBJoystick(1);
 	boolean sharedControlsMode = false;
 	
-	//OJ_Camera camera = new OJ_Camera(0, 0);
 	
 	Relay light = new Relay(0);
 	
@@ -32,15 +32,19 @@ public class Robot extends IterativeRobot {
 	
 	Compressor Compressor = new Compressor();
 	
-	OJ_CANTalon rightBack = new OJ_CANTalon(6);
-	OJ_CANTalon rightFront = new OJ_CANTalon(4);
-	OJ_CANTalon leftBack = new OJ_CANTalon(3);
-	OJ_CANTalon leftFront = new OJ_CANTalon(2);
-	OJ_CANTalon verticalLift = new OJ_CANTalon(0);
-	OJ_CANTalon stackerToteLift = new OJ_CANTalon(5);
-	OJ_VictorSP wheelIntake = new OJ_VictorSP(2);
-	EPMotor intakeArms = new EPMotor(0, .4);//check port, speed
-	OJ_VictorSP toteRoller = new OJ_VictorSP(0);
+	Servo servoX = new Servo(0);
+	Servo servoY = new Servo(1);
+	Camera cameraServos = new Camera(servoX, servoY, (int)6.9);
+	
+	ExtendedCANTalon rightBack = new ExtendedCANTalon(13);
+	ExtendedCANTalon rightFront = new ExtendedCANTalon(12);
+	ExtendedCANTalon leftBack = new ExtendedCANTalon(11);
+	ExtendedCANTalon leftFront = new ExtendedCANTalon(10);
+	ExtendedCANTalon verticalLift = new ExtendedCANTalon(15);
+	ExtendedCANTalon stackerToteLift = new ExtendedCANTalon(14);
+	ExtendedVictorSP wheelIntake = new ExtendedVictorSP(9);
+	EncodedMotor intakeArms = new EncodedMotor(0, .4);
+	ExtendedVictorSP toteRoller = new ExtendedVictorSP(7);
 	RobotDrive drive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 	
 	Toggle intakeToggle = new Toggle(xboxgun, 5);
@@ -81,6 +85,7 @@ public class Robot extends IterativeRobot {
     	//SmartDashboard.getNumber("POV", -1);
     	SmartDashboard.putNumber("POV", -1);
     	SmartDashboard.putNumber("PORT", 0);
+    	SmartDashboard.putNumber("VICTOR_PORT", 0);
     	SmartDashboard.putBoolean("Limit Switch", limitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
     	SmartDashboard.putNumber("PressureVoltage", 0);
@@ -123,13 +128,13 @@ public class Robot extends IterativeRobot {
     	double driveSpeedScale = (xboxdrive.getRawButton(6)? .5 : 1); // scaling factor reduced to 0.5
     	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
         
-    	OJ.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
-    	OJ.runLED(lightToggle, light);
+    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
+    	Utility.runLED(lightToggle, light);
     	
     	verticalLift(joystick);
     	stackerToteLift(joystick);
     	intake(joystick);
-    	
+    	moveCamera();
     	
     	rumbleAlert.check();
     	
@@ -177,6 +182,19 @@ public class Robot extends IterativeRobot {
     		intakeArms.setPosition(maxWidth);
     	}else{
     		intakeArms.setPosition(minWidth);
+    	}
+    }
+    
+    /**
+     * Moves the camera based on joystick axis 0 and 1
+     * Also jumps to the home positions if buttons x and x
+     */
+    public void moveCamera() {
+    	cameraServos.moveCamera(xboxgun.getRawAxis(0), xboxgun.getRawAxis(1));
+    	if(xboxgun.getRawButton(10)) {
+    		cameraServos.setPosition(10, 10);
+    	}else if(xboxgun.getRawButton(9)) {
+    		cameraServos.setPosition(10, 10);
     	}
     }
     

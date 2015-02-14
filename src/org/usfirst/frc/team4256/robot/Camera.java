@@ -1,11 +1,10 @@
 package org.usfirst.frc.team4256.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
 import edu.wpi.first.wpilibj.tables.ITable;
 
-public class OJ_Camera implements LiveWindowSendable {
+public class Camera implements LiveWindowSendable {
 	Servo x;
 	Servo y;
 	int sensitivity;
@@ -17,13 +16,9 @@ public class OJ_Camera implements LiveWindowSendable {
 	private int minY = -1000;
 	private int maxY = 1000;
 	
-	public OJ_Camera(int servoPortX, int servoPortY) {
-		this(servoPortX, servoPortY, 8);
-	}
-	
-	public OJ_Camera(int servoPortX, int servoPortY, int sensitivity) {
-		this.x = new Servo(servoPortX);
-		this.y = new Servo(servoPortY);
+	public Camera(Servo x, Servo y, int sensitivity) {
+		this.x = x;
+		this.y = y;
 		this.sensitivity = sensitivity;
 	}
 	

@@ -2,13 +2,13 @@ package org.usfirst.frc.team4256.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class EPMotor {
+public class EncodedMotor {
 	CANTalon motor;
 	double speed;
 	int position;
 	boolean goingUp;
 	
-	public EPMotor(int port, double speed) {
+	public EncodedMotor(int port, double speed) {
 		this.motor = new CANTalon(port);
 		this.speed = speed;
 	}
