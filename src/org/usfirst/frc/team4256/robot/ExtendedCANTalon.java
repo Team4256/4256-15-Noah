@@ -19,5 +19,7 @@ public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 	public void set(double outputValue) {
 		super.set(isReversed? -outputValue : outputValue);
 	}
+	
+
 
 }

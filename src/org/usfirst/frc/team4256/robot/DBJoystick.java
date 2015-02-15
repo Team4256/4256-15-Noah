@@ -2,7 +2,10 @@ package org.usfirst.frc.team4256.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;
-
+/**
+ * DBJoystick = Deadband Joystick
+ *
+ */
 public class DBJoystick extends Joystick {
 	public static double DEADBAND = .2;
 	public static double DETENT = 0.7;

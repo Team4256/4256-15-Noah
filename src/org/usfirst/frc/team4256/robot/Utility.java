@@ -11,11 +11,11 @@ public class Utility {
 	
 	////////////////MOTOR////////////////
 	
-	public static void runMotor(boolean condition, MotorInterface motor, double speed) {
+	public static void runMotor(boolean condition, MotorInterface motor, double speed, double revSpeed) {
     	if(condition) {
     		motor.set(speed);
     	}else{
-    		motor.set(0);
+    		motor.set(revSpeed);
     	}
     }
 	
@@ -29,16 +29,16 @@ public class Utility {
     	}
     }
 	
-	public static void runMotor(Joystick j, int button, MotorInterface motor, double speed) {
-		runMotor(j.getRawButton(button), motor, speed);
+	public static void runMotor(Joystick j, int button, MotorInterface motor, double speed, double revSpeed) {
+		runMotor(j.getRawButton(button), motor, speed, revSpeed);
     }
 	
 	public static void runMotor(Joystick j, int fwdButton, int reverseButton, MotorInterface motor, double speed) {
 		runMotor(j.getRawButton(fwdButton), j.getRawButton(reverseButton), motor, speed);
     }
     
-    public static void runMotor(Toggle toggle, MotorInterface motor, double speed) {
-    	runMotor(toggle.getState(), motor, speed);
+    public static void runMotor(Toggle toggle, MotorInterface motor, double speed, double revSpeed) {
+    	runMotor(toggle.getState(), motor, speed, revSpeed);
     }
     
     //config
@@ -64,8 +64,8 @@ public class Utility {
     	runSolenoid(j.getRawButton(fwdButton), j.getRawButton(reverseButton), solenoid);
     }
     
-    public static void runSolenoid(Toggle toggle, DoubleSolenoid solenoid) {
-    	if(toggle.getState()) {
+    public static void runSolenoid(boolean condition, DoubleSolenoid solenoid) {
+    	if(condition) {
         	solenoid.set(DoubleSolenoid.Value.kForward);
     	}else{
     		solenoid.set(DoubleSolenoid.Value.kReverse);

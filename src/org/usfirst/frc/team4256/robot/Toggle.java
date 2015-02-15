@@ -28,5 +28,9 @@ public class Toggle {
 			state = !state;
 		lastValue = value;
 		return state;
-	}	
+	}
+	
+	public void setButton(int button) {
+		this.button = button;
+	}
 }

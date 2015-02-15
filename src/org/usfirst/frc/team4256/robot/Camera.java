@@ -1,7 +1,9 @@
 package org.usfirst.frc.team4256.robot;
 
+import edu.wpi.first.wpilibj.NamedSendable;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.livewindow.LiveWindowSendable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.tables.ITable;
 
 public class Camera implements LiveWindowSendable {
@@ -13,8 +15,8 @@ public class Camera implements LiveWindowSendable {
 	
 	private int minX = -1000;
 	private int maxX = 1000;
-	private int minY = -1000;
-	private int maxY = 1000;
+	public int minY = -1000;
+	public int maxY = 1000;
 	
 	public Camera(Servo x, Servo y, int sensitivity) {
 		this.x = x;
@@ -33,15 +35,18 @@ public class Camera implements LiveWindowSendable {
 	}
 	
 	public void setX(double positionX) {
-		if(positionX < maxX && positionX > minX) {
+		//if(positionX < maxX && positionX > minX) {
 			this.positionX = positionX;
-		}
+		//}
 		x.setAngle(positionX);
 	}
 	
 	public void setY(double positionY) {
-		if(positionY < maxY && positionY > minY) {
+		//if(positionY < maxY && positionY > minY) {
+		if(positionY > maxY) {
 			this.positionY = positionY;
+		}else{
+			this.positionY = 40;
 		}
 		y.setAngle(positionY);
 	}
@@ -51,6 +56,16 @@ public class Camera implements LiveWindowSendable {
 		this.minY = minY;
 		this.maxX = maxX;
 		this.maxY = maxY;
+	}
+	
+	public void displayInit() {
+		SmartDashboard.getNumber("Position X", positionX);
+		SmartDashboard.getNumber("Position Y", positionY);
+	}
+	
+	public void display() {
+		SmartDashboard.putNumber("Position X", positionX);
+		SmartDashboard.putNumber("Position Y", positionY);
 	}
 	
 	
@@ -87,6 +102,4 @@ public class Camera implements LiveWindowSendable {
 	@Override
 	public void stopLiveWindowMode() {
 	}
-	
-	
 }
