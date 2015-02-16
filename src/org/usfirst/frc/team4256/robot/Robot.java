@@ -36,8 +36,8 @@ public class Robot extends IterativeRobot {
 	
 	Compressor compressor = new Compressor();
 	
-	DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
-	DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+//	DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
+//	DoubleSolenoid rightArm = new DoubleSolenoid(1, 2, 3);
 	
 	Servo servoX = new Servo(0);
 	Servo servoY = new Servo(1);
@@ -80,12 +80,12 @@ public class Robot extends IterativeRobot {
 	double INTAKE_SPEED = 1;
 	double TOTE_ROLLER_SPEED = 1;
 	double STACKER_TOTE_SPEED = .2;
-    double VERTICAL_LIFT_SPEED = .1;
+    double VERTICAL_LIFT_SPEED = .65;
 	int maxHeight = 2000;
 	int minHeight = 0;
 			
     public void robotInit() {
-    	//camera.setRange(-100, -2000, 2000, 10000);
+    	
     	cameraServos.maxY = 42;
     	rightFront.setInversed(true);
     	rightBack.setInversed(true);
@@ -98,7 +98,9 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("AUTONOMOUS MODE", 0);
     	SmartDashboard.putNumber("POV", -1);
     	SmartDashboard.putNumber("PORT", 0);
-    	SmartDashboard.putNumber("VICTOR_PORT", 0);
+    	SmartDashboard.putNumber("S Module", 0);
+    	SmartDashboard.putNumber("S Forward Channel", 0);
+    	SmartDashboard.putNumber("S Reverse Channel", 0);
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
@@ -117,6 +119,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousPeriodic() {
+    	Utility.configSolenoidPorts(.2);
     	//Utility.configMotorPorts(.5);
     	//Utility.configVictorPorts(.5);
 
@@ -237,7 +240,7 @@ public class Robot extends IterativeRobot {
      * Moves the stacker tote lift up or down
      */
     public void stackerToteLift(DBJoystick joystick) {
-    	stackerToteLift.update(STACKER_TOTE_SPEED);
+    	stackerToteLift.update(-STACKER_TOTE_SPEED);
 //    	Utility.runMotor(joystick.axisPressed(3), joystick.axisPressed(2), stackerToteLift, -STACKER_TOTE_SPEED);
     	if(joystick.axisPressed(3)) { //axis 3 (RT) and axis 2 will control direction of stackerToteLift. RT will send tote stacker to maxheight. LT will send tote stacker to minheight. 
     		stackerToteLift.setPosition(maxHeight);
@@ -253,8 +256,8 @@ public class Robot extends IterativeRobot {
     	//moves arms out or in
     	armToggle.setButton(armToggleButton);
     	boolean armToggleState = armToggle.getState(joystick);
-    	Utility.runSolenoid(armToggleState, leftArm);
-    	Utility.runSolenoid(armToggleState, rightArm);
+    	//Utility.runSolenoid(armToggleState, leftArm);
+    	//Utility.runSolenoid(armToggleState, rightArm);
 
     	SmartDashboard.putBoolean("Wheel Intake", armToggleState);
     	

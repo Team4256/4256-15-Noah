@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -69,6 +70,24 @@ public class Utility {
         	solenoid.set(DoubleSolenoid.Value.kForward);
     	}else{
     		solenoid.set(DoubleSolenoid.Value.kReverse);
+    	}
+    }
+    
+    //config
+    public static void configSolenoidPorts(double delay) {
+    	for(int x=0; x<10; x++) {
+    		for(int y=0; y<5; y+=2) {
+    			for(int z=1; z<5; z+=2) {
+    				DoubleSolenoid s = new DoubleSolenoid(x, y, z);
+    				s.set(DoubleSolenoid.Value.kForward);
+    				Timer.delay(delay);
+    				s.set(DoubleSolenoid.Value.kReverse);
+    	        	Timer.delay(delay);
+    	    		SmartDashboard.putNumber("S Module", x);
+    	        	SmartDashboard.putNumber("S Forward Channel", y);
+    	        	SmartDashboard.putNumber("S Reverse Channel", z);
+    			}
+    		}
     	}
     }
     
