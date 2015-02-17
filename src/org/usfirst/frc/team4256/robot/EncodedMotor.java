@@ -48,4 +48,8 @@ public class EncodedMotor {
 	public void displayPositionAsPercent(String smartDashboardVarName) {
 		SmartDashboard.putString(smartDashboardVarName, getPositionAsPercent()+"%");
 	}
+
+	public void set(double outputValue) {
+		motor.set(outputValue);
+	}
 }

@@ -248,9 +248,11 @@ public class Robot extends IterativeRobot {
     	stackerToteLift.update(-STACKER_TOTE_SPEED);
 //    	Utility.runMotor(joystick.axisPressed(3), joystick.axisPressed(2), stackerToteLift, -STACKER_TOTE_SPEED);
     	if(joystick.axisPressed(3)) { //axis 3 (RT) and axis 2 will control direction of stackerToteLift. RT will send tote stacker to maxheight. LT will send tote stacker to minheight. 
-    		stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
+    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
+    		stackerToteLift.set(-STACKER_TOTE_SPEED);
     	}else if(joystick.axisPressed(2)) {
-    		stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
+    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
+    		stackerToteLift.set(STACKER_TOTE_SPEED);
     	}
     	
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
