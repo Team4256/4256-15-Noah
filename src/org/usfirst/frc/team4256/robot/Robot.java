@@ -25,8 +25,8 @@ public class Robot extends IterativeRobot {
 	//constants (these will change)
 	double INTAKE_SPEED = 1;
 	double TOTE_ROLLER_SPEED = 1;
-	double STACKER_TOTE_SPEED = .2;
-    double VERTICAL_LIFT_SPEED = .65;
+	double STACKER_TOTE_SPEED = .6;
+    double VERTICAL_LIFT_SPEED = .8;
 	int STACKER_TOTE_LIFT_MAX_HEIGHT = 2000;
 	int STACKER_TOTE_LIFT_MIN_HEIGHT = 0;
     
@@ -53,7 +53,7 @@ public class Robot extends IterativeRobot {
 	static ExtendedCANTalon rightFront = new ExtendedCANTalon(11);
 	static ExtendedCANTalon leftBack = new ExtendedCANTalon(12);
 	static ExtendedCANTalon leftFront = new ExtendedCANTalon(13);
-	ExtendedCANTalon verticalLift = new ExtendedCANTalon(15);
+	EncodedMotor verticalLift = new EncodedMotor(15);
 	EncodedMotor stackerToteLift = new EncodedMotor(14);
 	ExtendedVictorSP wheelIntake = new ExtendedVictorSP(9);
 	ExtendedVictorSP toteRoller = new ExtendedVictorSP(7);
@@ -65,8 +65,6 @@ public class Robot extends IterativeRobot {
 	Toggle switchToggle = new Toggle(xboxdrive, 4);
 	
 	AnalogInput PressureGauge = new AnalogInput(0);
-	
-    boolean automaticLift = false;
 	
 	TimedEvent rumbleAlert = new TimedEvent(10, 9, true) {
 		@Override
@@ -104,6 +102,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putString("Vertical Lift Direction", "");
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
+    	SmartDashboard.putNumber("Vertical Tick Position", -1000);
     	cameraServos.displayInit();
     }
  
@@ -124,8 +123,8 @@ public class Robot extends IterativeRobot {
     		leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
     		rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
     		wheelIntake.set(1);
-    		AutoDrive.turnRight();
-    		AutoDrive.goFoward(2);
+//    		AutoDrive.turnRight();
+//    		AutoDrive.goFoward(2);
     		
     	}else if(mode == 1) {
     		
@@ -164,7 +163,12 @@ public class Robot extends IterativeRobot {
     	Utility.runMotor(joystick, 1, 3, wheelIntake, INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
     	
-    	verticalLift(joystick);
+    	
+    	if(SmartDashboard.getNumber("Vertical Tick Position") == -1000){
+        	verticalLift(joystick);
+    	}else{
+    		verticalEncodeMode(joystick);
+    	}
     	stackerToteLift(joystick);
     	moveArms(joystick);
 //    	intake(joystick);
@@ -177,6 +181,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*40.81-54.89, 5));
     	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 1));
+    	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     }
     
     
@@ -184,14 +189,20 @@ public class Robot extends IterativeRobot {
         	double amount = Math.pow(10, places);
         	return Math.round(n*amount)/amount;
 	}
-
+   
+    
+    public void verticalEncodeMode(DBJoystick joystick) {
+    	verticalLift.setEncPosition((int) SmartDashboard.getNumber("Vertical Tick Position"));
+    }
 	/**
      * Moves the vertical lift up or down
      */
     double vertLiftCurrentSpeed = 0;
     DigitalInput vertLiftCurrentLimitSwitch = lowerLimitSwitch;
+    boolean automaticLift = false;
     
     public void verticalLift(DBJoystick joystick) {
+    	//sets speed and limit switch check variables based on what button is pressed
     	if(joystick.getPOV() == DBJoystick.NORTH) { // xboxgun dpad (haven't found button (or in this case POV) inputs) will control direction of vertical lift. Up ascends the lift to the maximum height, down descends the lift to the minimum height.
     		automaticLift = false;
     		raiseVertOutput();
@@ -209,12 +220,14 @@ public class Robot extends IterativeRobot {
     		raiseVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Auto Up");
     	}else{
+    		//sets the speed value to 0 if not in automatic mode
     		if(!automaticLift) {
     			vertLiftCurrentSpeed = 0;
             	SmartDashboard.putString("Vertical Lift Direction", "0");
         	}
     	}
     	
+    	//stops if the limit switch is pressed
     	if(vertLiftCurrentLimitSwitch.get()) {
     		verticalLift.set(vertLiftCurrentSpeed);
     	}else{
@@ -224,10 +237,10 @@ public class Robot extends IterativeRobot {
     		SmartDashboard.putString("Vertical Lift Direction", "0");
     	}
     	
+    	//writes values to the dashboard
     	SmartDashboard.putBoolean("Automatic lift", automaticLift);
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     }
     
     public void raiseVertOutput() {
@@ -288,7 +301,7 @@ public class Robot extends IterativeRobot {
     	}else if(xboxgun.getRawButton(7)) {//back
     		cameraServos.setPosition(253, 73);
     	}else if(xboxgun.getRawButton(9)) {//feed position
-    		cameraServos.setPosition(10, 10);
+    		cameraServos.setPosition(34, 112);
     	}else{
         	cameraServos.moveCamera(-xboxgun.getRawAxis(0), xboxgun.getRawAxis(1));//move normally
     	}

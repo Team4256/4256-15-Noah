@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 
 public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 	boolean isReversed = false;
+	private int encZeroValue = 0;
 	
 	public ExtendedCANTalon(int deviceNumber) {
 		super(deviceNumber);
@@ -18,6 +19,14 @@ public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 
 	public void set(double outputValue) {
 		super.set(isReversed? -outputValue : outputValue);
+	}
+	
+	public void resetEncPosition() {
+		encZeroValue = super.getEncPosition();
+	}
+	
+	public int getEncPosition() {
+		return super.getEncPosition()-encZeroValue;
 	}
 	
 
