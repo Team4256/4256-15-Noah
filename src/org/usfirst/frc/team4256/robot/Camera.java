@@ -59,13 +59,13 @@ public class Camera implements LiveWindowSendable {
 	}
 	
 	public void displayInit() {
-		SmartDashboard.getNumber("Position X", positionX);
-		SmartDashboard.getNumber("Position Y", positionY);
+		SmartDashboard.getNumber("Camera Position X", positionX);
+		SmartDashboard.getNumber("Camera Position Y", positionY);
 	}
 	
 	public void display() {
-		SmartDashboard.putNumber("Position X", positionX);
-		SmartDashboard.putNumber("Position Y", positionY);
+		SmartDashboard.putNumber("Camera Position X", positionX);
+		SmartDashboard.putNumber("Camera Position Y", positionY);
 	}
 	
 	
