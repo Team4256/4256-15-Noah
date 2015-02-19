@@ -23,10 +23,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	//constants (these will change)
-	double INTAKE_SPEED = 1;
+	double WHEEL_INTAKE_SPEED = 1;
 	double TOTE_ROLLER_SPEED = 1;
 	double STACKER_TOTE_SPEED = .6;
-    double VERTICAL_LIFT_SPEED = .8;
+    double VERTICAL_LIFT_SPEED = 1;
 	int STACKER_TOTE_LIFT_MAX_HEIGHT = 2000;
 	int STACKER_TOTE_LIFT_MIN_HEIGHT = 0;
     
@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
 	Compressor compressor = new Compressor();
 	
 	DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
-	DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+	DoubleSolenoid rightArm = new DoubleSolenoid(0, 3, 2);
 	
 	Servo servoX = new Servo(0);
 	Servo servoY = new Servo(1);
@@ -87,7 +87,6 @@ public class Robot extends IterativeRobot {
     
     public void dashInit() {
     	SmartDashboard.putNumber("AUTONOMOUS MODE", 0);
-    	SmartDashboard.putNumber("POV", -1);
     	SmartDashboard.putNumber("PORT", 0);
     	SmartDashboard.putNumber("S Module", 0);
     	SmartDashboard.putNumber("S Forward Channel", 0);
@@ -140,7 +139,6 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	cameraServos.display();
-    	SmartDashboard.putNumber("POV", xboxdrive.getPOV());
     	if(switchToggle.getState()) {
     		SmartDashboard.putString("Driver Mode", "Solo Mode");
     		runSharedFunctions(xboxdrive);
@@ -160,7 +158,7 @@ public class Robot extends IterativeRobot {
         
 //    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
-    	Utility.runMotor(joystick, 1, 3, wheelIntake, INTAKE_SPEED);
+    	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
     	
     	
@@ -189,11 +187,11 @@ public class Robot extends IterativeRobot {
         	double amount = Math.pow(10, places);
         	return Math.round(n*amount)/amount;
 	}
-   
     
     public void verticalEncodeMode(DBJoystick joystick) {
     	verticalLift.setEncPosition((int) SmartDashboard.getNumber("Vertical Tick Position"));
     }
+    
 	/**
      * Moves the vertical lift up or down
      */
@@ -258,7 +256,7 @@ public class Robot extends IterativeRobot {
      * Moves the stacker tote lift up or down
      */
     public void stackerToteLift(DBJoystick joystick) {
-    	stackerToteLift.update(-STACKER_TOTE_SPEED);
+//    	stackerToteLift.update(-STACKER_TOTE_SPEED);
 //    	Utility.runMotor(joystick.axisPressed(3), joystick.axisPressed(2), stackerToteLift, -STACKER_TOTE_SPEED);
     	if(joystick.axisPressed(3)) { //axis 3 (RT) and axis 2 will control direction of stackerToteLift. RT will send tote stacker to maxheight. LT will send tote stacker to minheight. 
     		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
@@ -266,6 +264,8 @@ public class Robot extends IterativeRobot {
     	}else if(joystick.axisPressed(2)) {
     		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
     		stackerToteLift.set(STACKER_TOTE_SPEED);
+    	}else{
+    		stackerToteLift.set(0);
     	}
     	
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
@@ -314,6 +314,8 @@ public class Robot extends IterativeRobot {
 //    	Timer.delay(.5);
 //    	xboxdrive.rumble(0);
     }
+    
+     
     
     
     /**
