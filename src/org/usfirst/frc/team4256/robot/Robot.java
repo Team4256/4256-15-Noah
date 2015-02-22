@@ -23,12 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	//constants (these will change)
-	double WHEEL_INTAKE_SPEED = 1;
-	double TOTE_ROLLER_SPEED = 1;
-	double STACKER_TOTE_SPEED = .6;
-    double VERTICAL_LIFT_SPEED = 1;
-	int STACKER_TOTE_LIFT_MAX_HEIGHT = 2000;
-	int STACKER_TOTE_LIFT_MIN_HEIGHT = 0;
+	static double WHEEL_INTAKE_SPEED = 1;
+	static double TOTE_ROLLER_SPEED = 1;
+	static double STACKER_TOTE_SPEED = 1;
+	static double VERTICAL_LIFT_SPEED = 1;
+	static int STACKER_TOTE_LIFT_MAX_HEIGHT = 2000;
+	static int STACKER_TOTE_LIFT_MIN_HEIGHT = 0;
     
 	
 	DBJoystick xboxdrive = new DBJoystick(0);
@@ -42,8 +42,10 @@ public class Robot extends IterativeRobot {
 	
 	Compressor compressor = new Compressor();
 	
-	DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
-	DoubleSolenoid rightArm = new DoubleSolenoid(0, 3, 2);
+	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
+//	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 3, 2); //Robot 1
+	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+
 	
 	Servo servoX = new Servo(0);
 	Servo servoY = new Servo(1);
@@ -53,10 +55,10 @@ public class Robot extends IterativeRobot {
 	static ExtendedCANTalon rightFront = new ExtendedCANTalon(11);
 	static ExtendedCANTalon leftBack = new ExtendedCANTalon(12);
 	static ExtendedCANTalon leftFront = new ExtendedCANTalon(13);
-	EncodedMotor verticalLift = new EncodedMotor(15);
-	EncodedMotor stackerToteLift = new EncodedMotor(14);
-	ExtendedVictorSP wheelIntake = new ExtendedVictorSP(9);
-	ExtendedVictorSP toteRoller = new ExtendedVictorSP(7);
+	static EncodedMotor verticalLift = new EncodedMotor(15);
+	static EncodedMotor stackerToteLift = new EncodedMotor(14);
+	static ExtendedVictorSP wheelIntake = new ExtendedVictorSP(9);
+	static ExtendedVictorSP toteRoller = new ExtendedVictorSP(7);
 	static RobotDrive drive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 	
 	Toggle armToggle = new Toggle(null, 6);
@@ -86,48 +88,71 @@ public class Robot extends IterativeRobot {
     }
     
     public void dashInit() {
-    	SmartDashboard.putNumber("AUTONOMOUS MODE", 0);
-    	SmartDashboard.putNumber("PORT", 0);
-    	SmartDashboard.putNumber("S Module", 0);
-    	SmartDashboard.putNumber("S Forward Channel", 0);
-    	SmartDashboard.putNumber("S Reverse Channel", 0);
+    	//autonomous
+    	SmartDashboard.getNumber("AUTONOMOUS MODE", 3);
+    	SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftBack.getEncPosition());
+		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
+		SmartDashboard.putNumber("AutoRightFrontEnc", Robot.leftBack.getEncPosition());
+		SmartDashboard.putNumber("AutoRightBackEnc", Robot.leftBack.getEncPosition());
+		
+    	//teleop
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
     	SmartDashboard.putNumber("PressureVoltage", 0);
     	SmartDashboard.putString("Driver Mode", "");
-    	SmartDashboard.putBoolean("Wheel Intake", false);
+    	SmartDashboard.putBoolean("Arm Intake", false);
     	SmartDashboard.putBoolean("Automatic Lift", false);
     	SmartDashboard.putString("Vertical Lift Direction", "");
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Tick Position", -1000);
     	cameraServos.displayInit();
+    	
+    	//test/configuration variables
+    	SmartDashboard.putNumber("PORT", 0);
+    	SmartDashboard.putNumber("S Module", 0);
+    	SmartDashboard.putNumber("S Forward Channel", 0);
+    	SmartDashboard.putNumber("S Reverse Channel", 0);
     }
  
 	
     
     
     public void autonomousInit() {
+    	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
+    	switch(mode) {
+    	case 1:
+    		AutoDrive.verticalLiftUp();
+    		AutoDrive.intakeTote();
+    		AutoDrive.turnRight(.6);
+    		AutoDrive.goFoward(2000, .5);
+    		break;
+    	case 2:
+    		AutoDrive.turnRight(.6);
+    		break;
+    	case 3:
+    		AutoDrive.turnLeft(.6);
+    		break;
+    	case 4:
+    		AutoDrive.intakeTote();
+    		break;
+    	case 5:
+    		AutoDrive.verticalLiftUp();
+    		break;
+    	case 6:
+    		AutoDrive.goFoward(2000, .5);
+    		break;
+    	default:
+    		break;
+    	}
     }
     
     public void autonomousPeriodic() {
-    	Utility.configSolenoidPorts(.2);
+//    	Utility.configSolenoidPorts(.2);
     	//Utility.configMotorPorts(.5);
 
-    	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
-    	if(mode == 0) {
-//    		stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
-//    		Timer.delay(3);
-    		leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
-    		rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
-    		wheelIntake.set(1);
-//    		AutoDrive.turnRight();
-//    		AutoDrive.goFoward(2);
-    		
-    	}else if(mode == 1) {
-    		
-    	}
+		
     }
     
     
@@ -175,8 +200,8 @@ public class Robot extends IterativeRobot {
     	rumbleAlert.check();
     	
     	//camera.moveCamera(xboxgun.getRawAxis(4),xboxgun.getRawAxis(5));
-    	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
-    	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
+    	SmartDashboard.putBoolean("Upper Limit Switch", !upperLimitSwitch.get());
+    	SmartDashboard.putBoolean("Lower Limit Switch", !lowerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*40.81-54.89, 5));
     	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 1));
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
@@ -190,6 +215,7 @@ public class Robot extends IterativeRobot {
     
     public void verticalEncodeMode(DBJoystick joystick) {
     	verticalLift.setEncPosition((int) SmartDashboard.getNumber("Vertical Tick Position"));
+    	verticalLift.update(VERTICAL_LIFT_SPEED);
     }
     
 	/**
@@ -280,7 +306,7 @@ public class Robot extends IterativeRobot {
     	Utility.runSolenoid(armToggleState, leftArm);
     	Utility.runSolenoid(armToggleState, rightArm);
 
-    	SmartDashboard.putBoolean("Wheel Intake", armToggleState);
+    	SmartDashboard.putBoolean("Arm Intake", armToggleState);
     	
     	//moves wheels
 //    	if(armToggleState) {
