@@ -3,7 +3,7 @@ package org.usfirst.frc.team4256.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
-public class EncodedMotor {
+public class EncodedMotor  implements MotorInterface {
 	ExtendedCANTalon motor;
 	int position;
 	boolean goingUp;

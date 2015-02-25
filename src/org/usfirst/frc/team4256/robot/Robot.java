@@ -39,6 +39,7 @@ public class Robot extends IterativeRobot {
 	
 	DigitalInput upperLimitSwitch = new DigitalInput(0);
 	DigitalInput lowerLimitSwitch = new DigitalInput(1);
+	DigitalInput lowerStackerLimitSwitch = new DigitalInput(3);
 	
 	Compressor compressor = new Compressor();
 	
@@ -98,6 +99,7 @@ public class Robot extends IterativeRobot {
     	//teleop
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
+    	SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lowerStackerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
     	SmartDashboard.putNumber("PressureVoltage", 0);
     	SmartDashboard.putString("Driver Mode", "");
@@ -200,8 +202,8 @@ public class Robot extends IterativeRobot {
     	rumbleAlert.check();
     	
     	//camera.moveCamera(xboxgun.getRawAxis(4),xboxgun.getRawAxis(5));
-    	SmartDashboard.putBoolean("Upper Limit Switch", !upperLimitSwitch.get());
-    	SmartDashboard.putBoolean("Lower Limit Switch", !lowerLimitSwitch.get());
+    	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
+    	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*40.81-54.89, 5));
     	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 1));
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
@@ -222,24 +224,26 @@ public class Robot extends IterativeRobot {
      * Moves the vertical lift up or down
      */
     double vertLiftCurrentSpeed = 0;
+    double stackerToteCurrentSpeed = 0;
     DigitalInput vertLiftCurrentLimitSwitch = lowerLimitSwitch;
     boolean automaticLift = false;
     
     public void verticalLift(DBJoystick joystick) {
     	//sets speed and limit switch check variables based on what button is pressed
-    	if(joystick.getPOV() == DBJoystick.NORTH) { // xboxgun dpad (haven't found button (or in this case POV) inputs) will control direction of vertical lift. Up ascends the lift to the maximum height, down descends the lift to the minimum height.
+    	int joystickPOV = joystick.getPOV();
+    	if(joystickPOV == DBJoystick.NORTH || joystickPOV == DBJoystick.NORTH_WEST || joystickPOV == DBJoystick.NORTH_EAST ) { // xboxgun dpad (haven't found button (or in this case POV) inputs) will control direction of vertical lift. Up ascends the lift to the maximum height, down descends the lift to the minimum height.
     		automaticLift = false;
     		raiseVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Up");
-    	}else if(joystick.getPOV() == DBJoystick.SOUTH) {
+    	}else if(joystickPOV == DBJoystick.SOUTH || joystickPOV == DBJoystick.SOUTH_WEST || joystickPOV == DBJoystick.SOUTH_EAST ) {
     		automaticLift = false;
     		lowerVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Down");
-    	}else if(joystick.getPOV() == DBJoystick.EAST) {
+    	}else if(joystickPOV == DBJoystick.EAST) {
     		automaticLift = true;
     		lowerVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Auto Down");
-    	}else if(joystick.getPOV() == DBJoystick.WEST) {
+    	}else if(joystickPOV == DBJoystick.WEST) {
     		automaticLift = true;
     		raiseVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Auto Up");
@@ -260,12 +264,15 @@ public class Robot extends IterativeRobot {
     		automaticLift = false;
     		SmartDashboard.putString("Vertical Lift Direction", "0");
     	}
+   
+    	
     	
     	//writes values to the dashboard
     	SmartDashboard.putBoolean("Automatic lift", automaticLift);
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    }
+    	}
+    
     
     public void raiseVertOutput() {
     	vertLiftCurrentSpeed = -VERTICAL_LIFT_SPEED;
@@ -283,17 +290,17 @@ public class Robot extends IterativeRobot {
      */
     public void stackerToteLift(DBJoystick joystick) {
 //    	stackerToteLift.update(-STACKER_TOTE_SPEED);
-//    	Utility.runMotor(joystick.axisPressed(3), joystick.axisPressed(2), stackerToteLift, -STACKER_TOTE_SPEED);
-    	if(joystick.axisPressed(3)) { //axis 3 (RT) and axis 2 will control direction of stackerToteLift. RT will send tote stacker to maxheight. LT will send tote stacker to minheight. 
-    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
-    		stackerToteLift.set(-STACKER_TOTE_SPEED);
-    	}else if(joystick.axisPressed(2)) {
-    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
-    		stackerToteLift.set(STACKER_TOTE_SPEED);
-    	}else{
-    		stackerToteLift.set(0);
-    	}
-    	
+    	boolean lwrLimitSwitch = lowerStackerLimitSwitch.get();
+    	Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3), stackerToteLift, STACKER_TOTE_SPEED);
+//    	if(joystick.axisPressed(3)) {
+//    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
+//    	}else if(joystick.axisPressed(2) && StackerToteLiftCurrentLimitSwitch.get()) {
+//    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
+//    	}else{
+//    		stackerToteLift.set(0);
+//    	}
+
+        SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lwrLimitSwitch);
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
     }
     
