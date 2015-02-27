@@ -360,9 +360,9 @@ public class Robot extends IterativeRobot {
     	if(xboxgun.getRawButton(8)) {//front
     		cameraServos.setPosition(-86, 75);
     	}else if(xboxgun.getRawButton(7)) {//back
-    		cameraServos.setPosition(253, 73);
+    		cameraServos.setPosition(131.18, 152.58);
     	}else if(xboxgun.getRawButton(9)) {//feed position
-    		cameraServos.setPosition(34, 112);
+    		cameraServos.setPosition(12.65, 132.69);
     	}else{
         	cameraServos.moveCamera(-xboxgun.getRawAxis(0), xboxgun.getRawAxis(1));//move normally
     	}
