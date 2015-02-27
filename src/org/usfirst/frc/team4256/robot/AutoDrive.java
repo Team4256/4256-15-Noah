@@ -1,5 +1,6 @@
 package org.usfirst.frc.team4256.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -8,7 +9,7 @@ public class AutoDrive {
 	public static int VERTICAL_LIFT_DOWN_POSITION = 0;//value needs testing
 	public static int STACKER_TOTE_LIFT_LEVEL_POSITION = 2000;//value needs testing
 	public static int STACKER_TOTE_BOTTOM_POSITION = 0;//value needs testing
-	public static int TOTE_INTAKE_TIME = 2;//value needs testing
+	public static int TOTE_INTAKE_TIME = 1;//value needs testing
 	
 	////////////////TOTE INTAKE////////////////
 	public static void intakeTote() {
@@ -31,21 +32,23 @@ public class AutoDrive {
 		Robot.toteRoller.set(0);
     }
 	
-	////////////////ENCODED LIFTS////////////////
+	////////////////ENCODED/LIMIT SWITCH LIFTS////////////////
 	public static void verticalLiftUp() {
 		moveEncodedMotorUp(Robot.verticalLift, VERTICAL_LIFT_UP_POSITION, Robot.VERTICAL_LIFT_SPEED);
     }
 	
 	public static void verticalLiftDown() {
-		moveEncodedMotorDown(Robot.verticalLift, VERTICAL_LIFT_DOWN_POSITION, -Robot.VERTICAL_LIFT_SPEED);
+//		moveEncodedMotorDown(Robot.verticalLift, VERTICAL_LIFT_DOWN_POSITION, -Robot.VERTICAL_LIFT_SPEED);
+		moveMotorToLimitSwitch(Robot.verticalLift, Robot.lowerLimitSwitch, -Robot.VERTICAL_LIFT_SPEED);
     }
 	
 	public static void stackerToteLiftUp(int level) {
 		moveEncodedMotorUp(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.STACKER_TOTE_SPEED);
     }
 	
-	public static void stackerToteLiftDown(int level) {
-		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION - STACKER_TOTE_LIFT_LEVEL_POSITION*level, -Robot.STACKER_TOTE_SPEED);
+	public static void stackerToteLiftDown() {
+//		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION - STACKER_TOTE_LIFT_LEVEL_POSITION*level, -Robot.STACKER_TOTE_SPEED);
+		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, -Robot.STACKER_TOTE_SPEED);
     }
 	
 	//private
@@ -63,6 +66,12 @@ public class AutoDrive {
     	m.set(0);
 	}
 	
+	private static void moveMotorToLimitSwitch(EncodedMotor m, DigitalInput limitSwitch, double speed) {
+		while(limitSwitch.get()) {
+    		m.set(speed);
+    	}
+    	m.set(0);
+	}
 	
 	////////////////TIME BASED DRIVE////////////////
     public static void turnLeftTimeBased() {

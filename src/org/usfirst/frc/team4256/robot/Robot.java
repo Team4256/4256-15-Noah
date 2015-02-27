@@ -37,9 +37,10 @@ public class Robot extends IterativeRobot {
 	
 	Relay light = new Relay(0);
 	
-	DigitalInput upperLimitSwitch = new DigitalInput(0);
-	DigitalInput lowerLimitSwitch = new DigitalInput(1);
-	DigitalInput lowerStackerLimitSwitch = new DigitalInput(3);
+	static DigitalInput upperLimitSwitch = new DigitalInput(0);
+	static DigitalInput lowerLimitSwitch = new DigitalInput(1);
+	static DigitalInput lowerStackerLimitSwitch = new DigitalInput(3);
+	static DigitalInput upperStackerLimitSwitch = new DigitalInput(2);
 	
 	Compressor compressor = new Compressor();
 	
@@ -99,6 +100,7 @@ public class Robot extends IterativeRobot {
     	//teleop
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
+    	SmartDashboard.putBoolean("Upper Tote Stacker Limit Switch", upperStackerLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lowerStackerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
     	SmartDashboard.putNumber("PressureVoltage", 0);
@@ -106,10 +108,27 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putBoolean("Arm Intake", false);
     	SmartDashboard.putBoolean("Automatic Lift", false);
     	SmartDashboard.putString("Vertical Lift Direction", "");
-    	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
+    	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());	
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Tick Position", -1000);
     	cameraServos.displayInit();
+    	
+    	//set up Smartboard labels - workaround since can't resize labels - creating text boxes
+    	SmartDashboard.putString("","Upper Limit Switch");
+    	SmartDashboard.putString(" ","Lower Limit Switch");
+    	SmartDashboard.putString("  ","Upper Tote Stacker Limit Switch");
+    	SmartDashboard.putString("   ","Lower Tote Stacker Limit Switch");
+    	SmartDashboard.putString("    ","Pressure");
+    	SmartDashboard.putString("     ","PressureVoltage");
+    	SmartDashboard.putString("      ","Driver Mode");
+    	SmartDashboard.putString("       ","Arm Intake");
+    	SmartDashboard.putString("        ","Automatic Lift");
+    	SmartDashboard.putString("         ","Vertical Lift Direction");
+    	SmartDashboard.putString("          ","Stacker Encoder");
+    	SmartDashboard.putString("           ","Vertical Lift Encoder");
+    	SmartDashboard.putString("            ","Vertical Tick Position");
+    	SmartDashboard.putString("             ","AUTONOMOUS MODE");
+    	
     	
     	//test/configuration variables
     	SmartDashboard.putNumber("PORT", 0);
@@ -129,6 +148,7 @@ public class Robot extends IterativeRobot {
     		AutoDrive.intakeTote();
     		AutoDrive.turnRight(.6);
     		AutoDrive.goFoward(2000, .5);
+    		AutoDrive.spitTote();
     		break;
     	case 2:
     		AutoDrive.turnRight(.6);
@@ -138,9 +158,15 @@ public class Robot extends IterativeRobot {
     		break;
     	case 4:
     		AutoDrive.intakeTote();
+    		Timer.delay(1);
+    		AutoDrive.spitTote();
+    		Timer.delay(1);
+    		AutoDrive.verticalLiftUp();
+    		Timer.delay(1);
+    		AutoDrive.verticalLiftDown();
     		break;
     	case 5:
-    		AutoDrive.verticalLiftUp();
+    		AutoDrive.verticalLiftDown();
     		break;
     	case 6:
     		AutoDrive.goFoward(2000, .5);
@@ -181,9 +207,9 @@ public class Robot extends IterativeRobot {
      */
     public void runSharedFunctions(DBJoystick joystick) {
     	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor reduced to 0.5
-    	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
-        
-//    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
+    	//drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
+        drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
+    	//    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
@@ -204,8 +230,8 @@ public class Robot extends IterativeRobot {
     	//camera.moveCamera(xboxgun.getRawAxis(4),xboxgun.getRawAxis(5));
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*40.81-54.89, 5));
-    	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 1));
+    	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*43.14-55.39, 5));
+    	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 4));
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     }
     
@@ -291,7 +317,8 @@ public class Robot extends IterativeRobot {
     public void stackerToteLift(DBJoystick joystick) {
 //    	stackerToteLift.update(-STACKER_TOTE_SPEED);
     	boolean lwrLimitSwitch = lowerStackerLimitSwitch.get();
-    	Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3), stackerToteLift, STACKER_TOTE_SPEED);
+    	boolean upperLimitSwitch = upperStackerLimitSwitch.get();
+    	Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && upperLimitSwitch, stackerToteLift, STACKER_TOTE_SPEED);
 //    	if(joystick.axisPressed(3)) {
 //    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
 //    	}else if(joystick.axisPressed(2) && StackerToteLiftCurrentLimitSwitch.get()) {
@@ -300,6 +327,7 @@ public class Robot extends IterativeRobot {
 //    		stackerToteLift.set(0);
 //    	}
 
+        SmartDashboard.putBoolean("Upper Tote Stacker Limit Switch", upperLimitSwitch);
         SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lwrLimitSwitch);
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
     }
