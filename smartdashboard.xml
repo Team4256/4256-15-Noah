@@ -1,5 +1,14 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="761" y="239"/>
+		<width>333</width>
+		<height>233</height>
+		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\feederstationboxleft.png"/>
+	</static-widget>
+	<widget field="TargetFound" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="126"/>
+	</widget>
 	<widget field="        " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="303" y="314"/>
 		<width>175</width>
@@ -55,7 +64,7 @@
 		<property name="Font Size" value="18"/>
 	</widget>
 	<widget field="    " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="277" y="68"/>
+		<location x="277" y="82"/>
 		<width>90</width>
 		<height>38</height>
 		<property name="Font Size" value="18"/>
@@ -67,10 +76,10 @@
 		<property name="Font Size" value="32"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
-		<location x="726" y="241"/>
+		<location x="725" y="241"/>
 		<width>345</width>
 		<height>232</height>
-		<property name="Image File" value="C:\Users\frc1\Pictures\feederstationbox.png"/>
+		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\feederstationboxright.png"/>
 	</static-widget>
 	<widget field="Automatic Lift" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="0"/>
@@ -88,7 +97,7 @@
 		<location x="2" y="30"/>
 	</widget>
 	<widget field="AUTONOMOUS MODE" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1576" y="312"/>
+		<location x="1576" y="313"/>
 		<height>25</height>
 	</widget>
 	<widget field="Arm Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
@@ -139,7 +148,7 @@
 		<width>147</width>
 	</widget>
 	<widget field="Pressure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="326" y="69"/>
+		<location x="326" y="83"/>
 		<width>169</width>
 		<height>36</height>
 		<property name="Font Size" value="24"/>
@@ -172,31 +181,18 @@
 		<location x="302" y="229"/>
 		<width>116</width>
 		<height>30</height>
-		<property name="Color to show when true" value="255.0.0.255"/>
-		<property name="Color to show when false" value="51.255.0.255"/>
+		<property name="Color to show when true" value="51.255.0.255"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
-		<location x="504" y="11"/>
-		<width>952</width>
-		<height>625</height>
-		<property name="Camera IP Address" value="10.42.56.20"/>
-	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
 		<location x="1458" y="25"/>
-		<property name="Image File" value="C:\Users\frc1\Desktop\AutoModes.png"/>
+		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\AutoModes.png"/>
 	</static-widget>
-	<widget field="" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="329" y="186"/>
-		<width>216</width>
-		<height>29</height>
-		<property name="Font Size" value="18"/>
-	</widget>
 	<widget field="Upper Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="302" y="189"/>
 		<width>114</width>
 		<height>25</height>
-		<property name="Color to show when true" value="255.0.0.255"/>
-		<property name="Color to show when false" value="51.255.0.255"/>
+		<property name="Color to show when true" value="51.255.0.255"/>
+		<property name="Color to show when false" value="204.0.0.255"/>
 	</widget>
 	<widget field="   " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="234" y="436"/>
@@ -223,6 +219,18 @@
 		<location x="296" y="315"/>
 		<width>94</width>
 		<height>32</height>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
+		<location x="504" y="11"/>
+		<width>952</width>
+		<height>625</height>
+		<property name="Camera IP Address" value="10.42.56.20"/>
+	</static-widget>
+	<widget field="" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="329" y="186"/>
+		<width>216</width>
+		<height>29</height>
+		<property name="Font Size" value="18"/>
 	</widget>
 </dashboard>
 <live-window>

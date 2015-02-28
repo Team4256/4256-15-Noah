@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.io.InputStream;
+import java.io.IOException;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,7 +32,6 @@ public class Robot extends IterativeRobot {
 	static double VERTICAL_LIFT_SPEED = 1;
 	static int STACKER_TOTE_LIFT_MAX_HEIGHT = 2000;
 	static int STACKER_TOTE_LIFT_MIN_HEIGHT = 0;
-    
 	
 	DBJoystick xboxdrive = new DBJoystick(0);
 	DBJoystick xboxgun = new DBJoystick(1);
@@ -104,6 +106,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lowerStackerLimitSwitch.get());
     	SmartDashboard.putNumber("Pressure", 0);
     	SmartDashboard.putNumber("PressureVoltage", 0);
+    	SmartDashboard.putBoolean("PSI", false);
     	SmartDashboard.putString("Driver Mode", "");
     	SmartDashboard.putBoolean("Arm Intake", false);
     	SmartDashboard.putBoolean("Automatic Lift", false);
@@ -112,7 +115,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Tick Position", -1000);
     	cameraServos.displayInit();
-    	
+        
     	//set up Smartboard labels - workaround since can't resize labels - creating text boxes
     	SmartDashboard.putString("","Upper Limit Switch");
     	SmartDashboard.putString(" ","Lower Limit Switch");
@@ -135,6 +138,9 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("S Module", 0);
     	SmartDashboard.putNumber("S Forward Channel", 0);
     	SmartDashboard.putNumber("S Reverse Channel", 0);
+    	
+    	
+    	
     }
  
 	
@@ -177,8 +183,9 @@ public class Robot extends IterativeRobot {
     		AutoDrive.turnLeft(90);
     		AutoDrive.goBackwardToAutozoneAndDeploy(1, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 6:
-    		AutoDrive.goFoward(2000, .5);
+    	case 6: //short single cycle bin
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+    		AutoDrive.goFowardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE-2500, 0, AUTO_DRIVE_SPEED);
     		break;
     	default:
     		break;
@@ -231,16 +238,22 @@ public class Robot extends IterativeRobot {
     	}
     	stackerToteLift(joystick);
     	moveArms(joystick);
-//    	intake(joystick);
     	moveCamera();
     	
     	rumbleAlert.check();
     	
-    	//camera.moveCamera(xboxgun.getRawAxis(4),xboxgun.getRawAxis(5));
+    	//update dashboard
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*43.14-55.39, 4));
-    	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 2));
+    	double pressureGauge = PressureGauge.getAverageVoltage()*43.14-55.39;
+    	SmartDashboard.putNumber("Pressure", roundTo(pressureGauge, 4));
+    	double pressureVoltage = PressureGauge.getAverageVoltage();
+    	SmartDashboard.putNumber("PressureVoltage", roundTo(pressureVoltage, 2));
+    	if (pressureGauge < 60){
+    		SmartDashboard.putBoolean("PSI", false);
+    	}else{
+    		SmartDashboard.putBoolean("PSI", true);
+    	}
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     }
     
