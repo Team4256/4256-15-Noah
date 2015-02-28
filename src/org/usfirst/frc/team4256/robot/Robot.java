@@ -138,35 +138,44 @@ public class Robot extends IterativeRobot {
     }
  
 	
-    
+    public static double AUTO_DRIVE_SPEED = .666;
     
     public void autonomousInit() {
     	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
     	switch(mode) {
-    	case 1:
-    		AutoDrive.verticalLiftUp();
+    	case 1: //single recycle bin
+//    		AutoDrive.verticalLiftUp();
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+    		AutoDrive.goFowardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+//    		AutoDrive.verticalLiftDown();
+    		break;
+    	case 2: //single recycle bin + tote
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+//    		AutoDrive.goFoward(500, AUTO_DRIVE_SPEED);
     		AutoDrive.intakeTote();
-    		AutoDrive.turnRight(.6);
-    		AutoDrive.goFoward(2000, .5);
-    		AutoDrive.spitTote();
+    		AutoDrive.turnRight(80);
+    		AutoDrive.goFowardToAutozoneAndDeploy(1, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 2:
-    		AutoDrive.turnRight(.6);
-    		break;
-    	case 3:
-    		AutoDrive.turnLeft(.6);
-    		break;
-    	case 4:
+    	case 3: //tri toter
+    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
+    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
+    		AutoDrive.stackerToteLiftDown();
+    		AutoDrive.stackerToteLiftUp(3);
     		AutoDrive.intakeTote();
-    		Timer.delay(1);
-    		AutoDrive.spitTote();
-    		Timer.delay(1);
-    		AutoDrive.verticalLiftUp();
-    		Timer.delay(1);
-    		AutoDrive.verticalLiftDown();
+    		AutoDrive.turnRight(90);
+    		AutoDrive.goFowardToAutozoneAndDeploy(3, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 5:
-    		AutoDrive.verticalLiftDown();
+    	case 4: //single recyle bin over bumplet
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+    		AutoDrive.turnRight(180);
+    		AutoDrive.goBackwardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		break;
+    	case 5: //single recycle bin + tote over bumplet
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+    		AutoDrive.goFoward(2000, AUTO_DRIVE_SPEED);
+    		AutoDrive.intakeTote();
+    		AutoDrive.turnLeft(90);
+    		AutoDrive.goBackwardToAutozoneAndDeploy(1, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 6:
     		AutoDrive.goFoward(2000, .5);
@@ -230,8 +239,8 @@ public class Robot extends IterativeRobot {
     	//camera.moveCamera(xboxgun.getRawAxis(4),xboxgun.getRawAxis(5));
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*43.14-55.39, 5));
-    	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 4));
+    	SmartDashboard.putNumber("Pressure", roundTo(PressureGauge.getAverageVoltage()*43.14-55.39, 4));
+    	SmartDashboard.putNumber("PressureVoltage", roundTo(PressureGauge.getAverageVoltage(), 2));
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     }
     
@@ -359,7 +368,7 @@ public class Robot extends IterativeRobot {
     public void moveCamera() {
     	if(xboxgun.getRawButton(8)) {//front
     		cameraServos.setPosition(-86, 75);
-    	}else if(xboxgun.getRawButton(7)) {//back
+    	}else if(xboxgun.getRawButton(7)) {//back (vertical lift)
     		cameraServos.setPosition(131.18, 152.58);
     	}else if(xboxgun.getRawButton(9)) {//feed position
     		cameraServos.setPosition(12.65, 132.69);

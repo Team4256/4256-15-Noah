@@ -3,7 +3,8 @@ package org.usfirst.frc.team4256.robot;
 import edu.wpi.first.wpilibj.CANTalon;
 
 public class ExtendedCANTalon extends CANTalon implements MotorInterface {
-	boolean isReversed = false;
+//	boolean isReversed = false;
+	private int direction = 1;
 	private int encZeroValue = 0;
 	
 	public ExtendedCANTalon(int deviceNumber) {
@@ -14,11 +15,12 @@ public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 	}
 	
 	public void setInversed(boolean isInversed) {
-		isReversed = isInversed;
+//		isReversed = isInversed;
+		direction = (isInversed? -1 : 1);
 	}
 
 	public void set(double outputValue) {
-		super.set(isReversed? -outputValue : outputValue);
+		super.set(direction*outputValue);
 	}
 	
 	public void resetEncPosition() {
@@ -26,7 +28,7 @@ public class ExtendedCANTalon extends CANTalon implements MotorInterface {
 	}
 	
 	public int getEncPosition() {
-		return super.getEncPosition()-encZeroValue;
+		return direction*(super.getEncPosition()-encZeroValue);
 	}
 	
 

@@ -1,0 +1,230 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="        " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="303" y="314"/>
+		<width>175</width>
+		<height>34</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="            " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1548" y="591"/>
+		<width>218</width>
+		<height>37</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="          " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="191" y="389"/>
+		<width>164</width>
+		<height>29</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="             " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1445" y="311"/>
+		<width>234</width>
+		<height>28</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field=" " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="328" y="224"/>
+		<width>164</width>
+		<height>38</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="           " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="175" y="144"/>
+		<width>206</width>
+		<height>32</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="         " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="180" y="270"/>
+		<width>196</width>
+		<height>31</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="       " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="305" y="523"/>
+		<width>130</width>
+		<height>33</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="     " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="219" y="35"/>
+		<width>149</width>
+		<height>32</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="    " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="277" y="68"/>
+		<width>90</width>
+		<height>38</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="      " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="691" y="672"/>
+		<width>208</width>
+		<height>47</height>
+		<property name="Font Size" value="32"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="726" y="241"/>
+		<width>345</width>
+		<height>232</height>
+		<property name="Image File" value="C:\Users\frc1\Pictures\feederstationbox.png"/>
+	</static-widget>
+	<widget field="Automatic Lift" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="0"/>
+	</widget>
+	<widget field="AutoRightBackEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="105"/>
+	</widget>
+	<widget field="AutoRightFrontEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="84"/>
+	</widget>
+	<widget field="AutoLeftFrontEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="51"/>
+	</widget>
+	<widget field="AutoLeftBackEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="2" y="30"/>
+	</widget>
+	<widget field="AUTONOMOUS MODE" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1576" y="312"/>
+		<height>25</height>
+	</widget>
+	<widget field="Arm Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="301" y="525"/>
+		<width>78</width>
+		<height>26</height>
+	</widget>
+	<widget field="PORT" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1743" y="449"/>
+		<width>130</width>
+	</widget>
+	<widget field="Camera Position Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1253" y="614"/>
+		<width>142</width>
+		<height>21</height>
+	</widget>
+	<widget field="Camera Position X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1253" y="594"/>
+		<width>142</width>
+		<height>21</height>
+	</widget>
+	<widget field="Vertical Lift Encoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="287" y="142"/>
+		<width>215</width>
+		<height>35</height>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="Vertical Tick Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1670" y="590"/>
+		<width>215</width>
+		<height>37</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="Vertical Lift Direction" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="279" y="268"/>
+		<width>218</width>
+		<height>35</height>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="PressureVoltage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="290" y="34"/>
+		<width>206</width>
+		<height>31</height>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="S Module" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1728" y="491"/>
+		<width>147</width>
+	</widget>
+	<widget field="Pressure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="326" y="69"/>
+		<width>169</width>
+		<height>36</height>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="S Reverse Channel" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1680" y="535"/>
+		<width>195</width>
+		<height>21</height>
+	</widget>
+	<widget field="S Forward Channel" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1680" y="513"/>
+		<width>195</width>
+		<height>21</height>
+	</widget>
+	<widget field="Stacker Encoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="277" y="388"/>
+		<width>215</width>
+		<height>35</height>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="Driver Mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="842" y="669"/>
+		<width>213</width>
+		<height>55</height>
+		<property name="Foreground" value="0.255.255.255"/>
+		<property name="Background" value="0.0.0.255"/>
+		<property name="Font Size" value="24"/>
+	</widget>
+	<widget field="Lower Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="302" y="229"/>
+		<width>116</width>
+		<height>30</height>
+		<property name="Color to show when true" value="255.0.0.255"/>
+		<property name="Color to show when false" value="51.255.0.255"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
+		<location x="504" y="11"/>
+		<width>952</width>
+		<height>625</height>
+		<property name="Camera IP Address" value="10.42.56.20"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="1458" y="25"/>
+		<property name="Image File" value="C:\Users\frc1\Desktop\AutoModes.png"/>
+	</static-widget>
+	<widget field="" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="329" y="186"/>
+		<width>216</width>
+		<height>29</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="Upper Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="302" y="189"/>
+		<width>114</width>
+		<height>25</height>
+		<property name="Color to show when true" value="255.0.0.255"/>
+		<property name="Color to show when false" value="51.255.0.255"/>
+	</widget>
+	<widget field="   " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="234" y="436"/>
+		<width>274</width>
+		<height>34</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="  " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="235" y="481"/>
+		<width>271</width>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="Lower Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="217" y="440"/>
+		<width>178</width>
+		<height>29</height>
+	</widget>
+	<widget field="Upper Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="213" y="481"/>
+		<width>180</width>
+		<height>27</height>
+	</widget>
+	<widget field="Automatic lift" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="296" y="315"/>
+		<width>94</width>
+		<height>32</height>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>
