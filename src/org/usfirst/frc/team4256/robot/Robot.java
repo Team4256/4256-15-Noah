@@ -1,6 +1,9 @@
 
 package org.usfirst.frc.team4256.robot;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -12,9 +15,6 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.io.InputStream;
-import java.io.IOException;
 
 
 /**
@@ -88,16 +88,17 @@ public class Robot extends IterativeRobot {
     	rightFront.setInversed(true);
     	rightBack.setInversed(true);
     	PressureGauge.setAverageBits(10);
+    	
     	dashInit();
     }
     
     public void dashInit() {
     	//autonomous
     	SmartDashboard.getNumber("AUTONOMOUS MODE", 3);
-    	SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftBack.getEncPosition());
-		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
-		SmartDashboard.putNumber("AutoRightFrontEnc", Robot.leftBack.getEncPosition());
-		SmartDashboard.putNumber("AutoRightBackEnc", Robot.leftBack.getEncPosition());
+    	SmartDashboard.putNumber("AutoLeftFrontEnc", 0);
+		SmartDashboard.putNumber("AutoLeftBackEnc", 0);
+		SmartDashboard.putNumber("AutoRightFrontEnc", 0);
+		SmartDashboard.putNumber("AutoRightBackEnc", 0);
 		
     	//teleop
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
@@ -149,43 +150,52 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
     	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
     	switch(mode) {
-    	case 1: //single recycle bin
-//    		AutoDrive.verticalLiftUp();
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
-    		AutoDrive.goFowardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
-//    		AutoDrive.verticalLiftDown();
+    	case 0: //lift recycle bin
+    		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
     		break;
-    	case 2: //single recycle bin + tote
+    	case 1: //single recycle bin
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
-//    		AutoDrive.goFoward(500, AUTO_DRIVE_SPEED);
-    		AutoDrive.intakeTote();
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		break;
+    	case 2: //single tote + recyle bin
+    		AutoDrive.syncRecycleBinAndToteIntake();
+    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
+    		Timer.delay(.5);
     		AutoDrive.turnRight(80);
-    		AutoDrive.goFowardToAutozoneAndDeploy(1, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 3: //tri toter
     		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
-    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
-    		AutoDrive.stackerToteLiftDown();
-    		AutoDrive.stackerToteLiftUp(3);
+    		AutoDrive.liftAndGoToNextTote(2, AUTO_DRIVE_SPEED);
+//    		AutoDrive.stackerToteLiftDown();
+//    		AutoDrive.stackerToteLiftUp(3);
     		AutoDrive.intakeTote();
+    		AutoDrive.syncToteStackerLiftDown();
     		AutoDrive.turnRight(90);
-    		AutoDrive.goFowardToAutozoneAndDeploy(3, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 4: //single recyle bin over bumplet
+    	case 4: //single recyle bin (over bumplet)
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
     		AutoDrive.turnRight(180);
-    		AutoDrive.goBackwardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goBackwardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 5: //single recycle bin + tote over bumplet
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
-    		AutoDrive.goFoward(2000, AUTO_DRIVE_SPEED);
-    		AutoDrive.intakeTote();
+    	case 5: //single tote + recyle bin (over bumplet)
+    		AutoDrive.syncRecycleBinAndToteIntake();
     		AutoDrive.turnLeft(90);
-    		AutoDrive.goBackwardToAutozoneAndDeploy(1, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goBackwardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 6: //short single cycle bin
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
-    		AutoDrive.goFowardToAutozoneAndDeploy(0, AutoDrive.AUTOZONE_DISTANCE-2500, 0, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE-2500, 0, AUTO_DRIVE_SPEED);
+    		break;
+    	case 7: //two totes + recycle bin
+    		AutoDrive.syncRecycleBinAndToteIntake();
+    		AutoDrive.turnLeft(160, AutoDrive.TURN_SPEED);
+    		AutoDrive.turnLeft(20, .1);
+    		AutoDrive.goToNextTote(1, AUTO_DRIVE_SPEED);
+    		AutoDrive.intakeTote();
+    		AutoDrive.turnLeft(90);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	default:
     		break;
@@ -201,6 +211,7 @@ public class Robot extends IterativeRobot {
     
     
     public void teleopInit() {
+    	cameraFeedPosition();
     }
 
     /**
@@ -386,8 +397,12 @@ public class Robot extends IterativeRobot {
     	}else if(xboxgun.getRawButton(9)) {//feed position
     		cameraServos.setPosition(12.65, 132.69);
     	}else{
-        	cameraServos.moveCamera(-xboxgun.getRawAxis(0), xboxgun.getRawAxis(1));//move normally
+    		cameraFeedPosition();
     	}
+    }
+    
+    public void cameraFeedPosition() {
+    	cameraServos.moveCamera(-xboxgun.getRawAxis(0), xboxgun.getRawAxis(1));//move normally
     }
     
     

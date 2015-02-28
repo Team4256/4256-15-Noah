@@ -1,5 +1,8 @@
 package org.usfirst.frc.team4256.robot;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,41 +15,82 @@ public class AutoDrive {
 	public static double TOTE_INTAKE_TIME = 2.5;
 	public static double TOTE_SPIT_TIME = 1;
 	
-	private static int TOTE_TO_TOTE_DISTANCE = 6217; //2ft 9 inches	-calculated by mr ies's expertise
+	private static int TOTE_TO_TOTE_DISTANCE = 3000; //2ft 9 inches	-calculated by mr ies's expertise
 	public static int AUTOZONE_DISTANCE = 4200;
 	
+    public static ExecutorService exeSrvc = Executors.newCachedThreadPool();
+	
+    ////////////////SYNCHRONIZED MOVES////////////////
+    public static void syncRecycleBinAndToteIntake() {
+    	syncRecycleBin();
+		syncToteIntake();
+		Timer.delay(1); //1.5 seconds less than tote intake time!
+    }
+    
+    public static void syncRecycleBin() {
+		exeSrvc.execute(new Runnable() {
+			public void run() {
+				moveMotorTimeBased(Robot.verticalLift, 1.5, -1);
+			}});
+    }
+    
+    public static void syncToteIntake() {
+		exeSrvc.execute(new Runnable() {
+			public void run() {
+				intakeTote();
+			}});
+    }
+    
+    public static void syncToteStackerLiftDown() {
+		exeSrvc.execute(new Runnable() {
+			public void run() {
+				stackerToteLiftDown();
+			}});
+    }
+    
+    public static void syncToteStackerLiftDownAndTo(final int level) {
+    	exeSrvc.execute(new Runnable() {
+			public void run() {
+				if(level >= 2) {
+					stackerToteLiftDown();
+				}
+				stackerToteLiftUp(level);
+			}});
+    }
+    
 	////////////////COMBO MOVES////////////////
-	public static void liftAndGoToNextTote(int level, double speed) {
-		intakeTote();
+    public static void liftAndGoToNextTote(int level, double speed) {
+    	syncToteIntake();
+    	goToNextTote(level, speed);
+    }
+	public static void goToNextTote(int level, double speed) {
 		goFoward(TOTE_TO_TOTE_DISTANCE-500, speed);
 		openArms();
-		goFoward(100, speed);
-		stackerToteLiftUp(level);
+		syncToteStackerLiftDownAndTo(level);
+		goFoward(500, speed);
 	}
 	
-	public static void goFowardToAutozoneAndDeploy(int totesToDeploy, double distance, double turnAngle, double speed) {
+	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
-		goToAutozoneAndDeploy(totesToDeploy, distance, turnAngle, speed);
-		if(totesToDeploy > 0) {
+		goToAutozoneAndDeploy(distance, turnAngle, speed);
+		if(deployTotes) {
 			goReverse(200, speed);
 		}
 	}
 	
-	public static void goBackwardToAutozoneAndDeploy(int totesToDeploy, double distance, double turnAngle, double speed) {
+	public static void goBackwardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goReverse((int) (distance), speed);
-		goToAutozoneAndDeploy(totesToDeploy, distance, turnAngle, speed);
-		if(totesToDeploy > 0) {
+		goToAutozoneAndDeploy(distance, turnAngle, speed);
+		if(deployTotes) {
 			goFoward(1000, speed);
 		}
 	}
 	
 	//private
-	private static void goToAutozoneAndDeploy(int totesToDeploy, double distance, double turnAngle, double speed) {
+	private static void goToAutozoneAndDeploy(double distance, double turnAngle, double speed) {
 		turnRight(turnAngle);
 		goFoward(1200, speed);
-		for(int tote=0; tote<totesToDeploy; tote++) {
-			spitTote();
-		}
+		spitTote();
 	}
 	
 	////////////////TOTE INTAKE////////////////
@@ -156,13 +200,21 @@ public class AutoDrive {
     }
     
     public static void turnLeft(double degrees) {
+    	turnLeft(degrees, TURN_SPEED);
+    }
+    
+    public static void turnLeft(double degrees, double speed) {
     	int turnTicks = (int) (degrees*RIGHT_ANGLE_TURN_TICKS/90);
-    	go(-turnTicks, turnTicks, -TURN_SPEED, TURN_SPEED, -1, 1);
+    	go(-turnTicks, turnTicks, -speed, speed, -1, 1);
     }
     
     public static void turnRight(double degrees) {
+    	turnRight(degrees, TURN_SPEED);
+    }
+    
+    public static void turnRight(double degrees, double speed) {
     	int turnTicks = (int) (degrees*RIGHT_ANGLE_TURN_TICKS/90);
-    	go(turnTicks, -turnTicks, TURN_SPEED, -TURN_SPEED, 1, -1);
+    	go(turnTicks, -turnTicks, speed, -speed, 1, -1);
     }
     
     //private

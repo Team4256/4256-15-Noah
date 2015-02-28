@@ -1,5 +1,23 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="TargetCenterY" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="303"/>
+	</widget>
+	<widget field="TargetHeight" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="282"/>
+	</widget>
+	<widget field="LeftOffset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="261"/>
+	</widget>
+	<widget field="RightOffset" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="240"/>
+	</widget>
+	<widget field="TargetCenterX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="189"/>
+	</widget>
+	<widget field="TargetWidth" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="168"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
 		<location x="761" y="239"/>
 		<width>333</width>
@@ -97,7 +115,7 @@
 		<location x="2" y="30"/>
 	</widget>
 	<widget field="AUTONOMOUS MODE" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1576" y="313"/>
+		<location x="1575" y="313"/>
 		<height>25</height>
 	</widget>
 	<widget field="Arm Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
@@ -149,7 +167,7 @@
 	</widget>
 	<widget field="Pressure" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="326" y="83"/>
-		<width>169</width>
+		<width>131</width>
 		<height>36</height>
 		<property name="Font Size" value="24"/>
 	</widget>
@@ -187,13 +205,6 @@
 		<location x="1458" y="25"/>
 		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\AutoModes.png"/>
 	</static-widget>
-	<widget field="Upper Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="302" y="189"/>
-		<width>114</width>
-		<height>25</height>
-		<property name="Color to show when true" value="51.255.0.255"/>
-		<property name="Color to show when false" value="204.0.0.255"/>
-	</widget>
 	<widget field="   " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
 		<location x="234" y="436"/>
 		<width>274</width>
@@ -232,7 +243,22 @@
 		<height>29</height>
 		<property name="Font Size" value="18"/>
 	</widget>
+	<widget field="Upper Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="302" y="189"/>
+		<width>114</width>
+		<height>25</height>
+		<property name="Color to show when true" value="51.255.0.255"/>
+		<property name="Color to show when false" value="204.0.0.255"/>
+	</widget>
+	<widget field="PSI" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="280" y="75"/>
+		<width>203</width>
+		<height>52</height>
+	</widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Feeder Side"/>
+	<hidden field="Pressure Status"/>
+	<hidden field="Feeder Right"/>
 </xml>
