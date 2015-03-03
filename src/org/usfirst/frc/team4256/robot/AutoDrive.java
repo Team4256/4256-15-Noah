@@ -15,7 +15,7 @@ public class AutoDrive {
 	public static double TOTE_INTAKE_TIME = 2.5;
 	public static double TOTE_SPIT_TIME = 1;
 	
-	private static int TOTE_TO_TOTE_DISTANCE = 3000; //2ft 9 inches	-calculated by mr ies's expertise
+	private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
 	public static int AUTOZONE_DISTANCE = 4200;
 	
     public static ExecutorService exeSrvc = Executors.newCachedThreadPool();
@@ -49,18 +49,19 @@ public class AutoDrive {
     }
     
     public static void syncToteStackerLiftDownAndTo(final int level) {
-    	exeSrvc.execute(new Runnable() {
-			public void run() {
-				if(level >= 2) {
+//    	exeSrvc.execute(new Runnable() {
+//			public void run() {
+				//if(level >= 2) {
 					stackerToteLiftDown();
-				}
+				//}
 				stackerToteLiftUp(level);
-			}});
+//			}});
     }
     
 	////////////////COMBO MOVES////////////////
     public static void liftAndGoToNextTote(int level, double speed) {
-    	syncToteIntake();
+//    	syncToteIntake();
+    	intakeTote();
     	goToNextTote(level, speed);
     }
 	public static void goToNextTote(int level, double speed) {
@@ -72,23 +73,24 @@ public class AutoDrive {
 	
 	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
-		goToAutozoneAndDeploy(distance, turnAngle, speed);
+		turnRight(turnAngle);
 		if(deployTotes) {
+			deployTotes(distance, turnAngle, speed);
 			goReverse(200, speed);
 		}
 	}
 	
 	public static void goBackwardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goReverse((int) (distance), speed);
-		goToAutozoneAndDeploy(distance, turnAngle, speed);
+		turnRight(turnAngle);
 		if(deployTotes) {
+			deployTotes(distance, turnAngle, speed);
 			goFoward(1000, speed);
 		}
 	}
 	
 	//private
-	private static void goToAutozoneAndDeploy(double distance, double turnAngle, double speed) {
-		turnRight(turnAngle);
+	private static void deployTotes(double distance, double turnAngle, double speed) {
 		goFoward(1200, speed);
 		spitTote();
 	}
@@ -120,7 +122,7 @@ public class AutoDrive {
 	
 	////////////////ENCODED/LIMIT SWITCH LIFTS////////////////
 	public static void verticalLiftUp() {
-		moveEncodedMotorUp(Robot.verticalLift, VERTICAL_LIFT_UP_POSITION, Robot.upperLimitSwitch, Robot.lowerLimitSwitch, Robot.VERTICAL_LIFT_SPEED);
+		moveEncodedMotorUp(Robot.verticalLift, VERTICAL_LIFT_UP_POSITION, Robot.upperLimitSwitch, Robot.VERTICAL_LIFT_SPEED);
     }
 	
 	public static void verticalLiftDown() {
@@ -130,12 +132,12 @@ public class AutoDrive {
 	
 	public static void stackerToteLiftUp(int level) {
 		moveEncodedMotorUp(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.upperStackerLimitSwitch,
-				Robot.lowerStackerLimitSwitch, Robot.STACKER_TOTE_SPEED/10); //SLO MO
+				-Robot.STACKER_TOTE_SPEED/5); //SLO MO
     }
 	
 	public static void stackerToteLiftDown() {
-//		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION - STACKER_TOTE_LIFT_LEVEL_POSITION*level, -Robot.STACKER_TOTE_SPEED);
-		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, -Robot.STACKER_TOTE_SPEED/10); //SLO MO
+//		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION - STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.STACKER_TOTE_SPEED);
+		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, Robot.STACKER_TOTE_SPEED/5); //SLO MO
     }
 	
 	public static void moveMotorTimeBased(EncodedMotor m, double time, double speed) {
@@ -145,8 +147,8 @@ public class AutoDrive {
 	}
 	
 	//private
-	private static void moveEncodedMotorUp(EncodedMotor verticalLift, int position, DigitalInput upperLimitSwitch, DigitalInput lowerLimitSwitch, double speed) {
-		while(verticalLift.getEncPosition() < position && upperLimitSwitch.get() && lowerLimitSwitch.get()) {
+	private static void moveEncodedMotorUp(EncodedMotor verticalLift, int position, DigitalInput upperLimitSwitch, double speed) {
+		while(verticalLift.getEncPosition() < position && upperLimitSwitch.get()) {
     		verticalLift.set(speed);
     	}
     	verticalLift.set(0);
@@ -188,8 +190,8 @@ public class AutoDrive {
     
     ////////////////ENCODER BASED DRIVE////////////////
     static int ENC_ACCURACY_RANGE = 10;
-    static int RIGHT_ANGLE_TURN_TICKS = 1180;
-    static double TURN_SPEED = .3;
+    static int RIGHT_ANGLE_TURN_TICKS = 1396;//1466
+    static double TURN_SPEED = .342;
     
     public static void goFoward(int ticks, double speed) {
     	go(ticks, ticks, speed, speed, 1, 1);

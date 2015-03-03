@@ -145,7 +145,8 @@ public class Robot extends IterativeRobot {
     }
  
 	
-    public static double AUTO_DRIVE_SPEED = .666;
+    public static double AUTO_DRIVE_SPEED = .5042;
+    public static double AUTO_DRIVE_TURN = .5;
     
     public void autonomousInit() {
     	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
@@ -154,7 +155,10 @@ public class Robot extends IterativeRobot {
     		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
     		break;
     	case 1: //single recycle bin
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+//    		AutoDrive.goFoward(3000, AUTO_DRIVE_SPEED);
+//    		Timer.delay(1.25);
+//    		AutoDrive.goFoward(2250, AUTO_DRIVE_SPEED);
     		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 2: //single tote + recyle bin
@@ -175,14 +179,25 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 4: //single recyle bin (over bumplet)
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
-    		AutoDrive.turnRight(180);
-    		AutoDrive.goBackwardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.goFoward(3000, AUTO_DRIVE_SPEED);
+    		Timer.delay(1.0);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, 1750, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 5: //single tote + recyle bin (over bumplet)
+    		//Timer.delay(3);
     		AutoDrive.syncRecycleBinAndToteIntake();
-    		AutoDrive.turnLeft(90);
-    		AutoDrive.goBackwardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
+    		Timer.delay(.5);
+    		AutoDrive.turnRight(80);
+    		AutoDrive.goFoward(5750, AUTO_DRIVE_SPEED); //go on bump
+    		Timer.delay(1.25);
+    		//AutoDrive.goFoward(1750, AUTO_DRIVE_SPEED); //go to autozone
+    		//AutoDrive.turnLeft(90);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, 1750, 90, AUTO_DRIVE_SPEED);
+//    		AutoDrive.syncRecycleBinAndToteIntake();
+//    		AutoDrive.turnLeft(90);
+//    		AutoDrive.goBackwardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 6: //short single cycle bin
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.5, -1);
@@ -198,6 +213,7 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	default:
+//    		AutoDrive.stackerToteLiftUp(5);
     		break;
     	}
     }
@@ -234,8 +250,8 @@ public class Robot extends IterativeRobot {
      */
     public void runSharedFunctions(DBJoystick joystick) {
     	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor reduced to 0.5
-    	//drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
-        drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
+    	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
+       // drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
     	//    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);

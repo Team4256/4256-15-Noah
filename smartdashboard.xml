@@ -258,7 +258,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Feeder Side"/>
-	<hidden field="Pressure Status"/>
-	<hidden field="Feeder Right"/>
 </xml>
