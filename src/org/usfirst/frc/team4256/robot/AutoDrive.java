@@ -15,8 +15,11 @@ public class AutoDrive {
 	public static double TOTE_INTAKE_TIME = 2.5;
 	public static double TOTE_SPIT_TIME = 1;
 	
-	private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
-	public static int AUTOZONE_DISTANCE = 4200;
+	//private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
+	private static int TOTE_TO_TOTE_DISTANCE = 1400; //comp
+
+//	public static int AUTOZONE_DISTANCE = 4200; //pre comp
+	public static int AUTOZONE_DISTANCE = 2200; //comp 
 	
     public static ExecutorService exeSrvc = Executors.newCachedThreadPool();
 	
@@ -30,7 +33,7 @@ public class AutoDrive {
     public static void syncRecycleBin() {
 		exeSrvc.execute(new Runnable() {
 			public void run() {
-				moveMotorTimeBased(Robot.verticalLift, 1.5, -1);
+				moveMotorTimeBased(Robot.verticalLift, 1.9, -1);
 			}});
     }
     
@@ -75,8 +78,8 @@ public class AutoDrive {
 		goFoward((int) (distance), speed);
 		turnRight(turnAngle);
 		if(deployTotes) {
-			deployTotes(distance, turnAngle, speed);
-			goReverse(200, speed);
+			deployTotes(distance, speed);
+			goReverse(100, speed);
 		}
 	}
 	
@@ -84,14 +87,14 @@ public class AutoDrive {
 		goReverse((int) (distance), speed);
 		turnRight(turnAngle);
 		if(deployTotes) {
-			deployTotes(distance, turnAngle, speed);
+			deployTotes(distance, speed);
 			goFoward(1000, speed);
 		}
 	}
 	
 	//private
-	private static void deployTotes(double distance, double turnAngle, double speed) {
-		goFoward(1200, speed);
+	private static void deployTotes(double distance, double speed) {
+		goFoward((int) (TOTE_TO_TOTE_DISTANCE*.15), speed);
 		spitTote();
 	}
 	
@@ -135,8 +138,12 @@ public class AutoDrive {
 				-Robot.STACKER_TOTE_SPEED/5); //SLO MO
     }
 	
+	public static void stackerToteLiftDown(int level) {
+		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.lowerStackerLimitSwitch,
+				Robot.STACKER_TOTE_SPEED);
+    }
+	
 	public static void stackerToteLiftDown() {
-//		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION - STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.STACKER_TOTE_SPEED);
 		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, Robot.STACKER_TOTE_SPEED/5); //SLO MO
     }
 	
@@ -154,8 +161,8 @@ public class AutoDrive {
     	verticalLift.set(0);
 	}
 	
-	private static void moveEncodedMotorDown(EncodedMotor m, int position, DigitalInput upperLimitSwitch, DigitalInput lowerLimitSwitch, double speed) {
-		while(m.getEncPosition() > position && upperLimitSwitch.get() && lowerLimitSwitch.get()) {
+	private static void moveEncodedMotorDown(EncodedMotor m, int position, DigitalInput lowerLimitSwitch, double speed) {
+		while(m.getEncPosition() > position && lowerLimitSwitch.get()) {
     		m.set(speed);
     	}
     	m.set(0);
@@ -238,7 +245,7 @@ public class AutoDrive {
     	//wait till distance is reached
     	boolean leftNotFinished = true;
     	boolean rightNotFinished = true;
-    	while(leftNotFinished || rightNotFinished) {
+    	while(leftNotFinished && rightNotFinished) {
     		//start motors
         	setMotors(lSpeed, Robot.leftBack, Robot.leftFront);
         	setMotors(rSpeed, Robot.rightBack, Robot.rightFront);
@@ -262,7 +269,21 @@ public class AutoDrive {
     }
 
 	private static int getAverageDistance(int ticks, ExtendedCANTalon m1, ExtendedCANTalon m2) {
-    	return ticks-((m1.getEncPosition()+m2.getEncPosition())/2);
+		int workingEncoders = 2;
+		int encPos1 = m1.getEncPosition();
+		int encPos2 = m2.getEncPosition();
+		int total = 0;
+		if(Math.abs(encPos1) > 40) {
+			total += encPos1;
+		}else{
+			workingEncoders = 1;
+		}
+		if(Math.abs(encPos2) > 40) {
+			total += encPos2;
+		}else{
+			workingEncoders = 1;
+		}
+    	return ticks-(total/workingEncoders);
     }
     
     private static void setMotors(double speed, ExtendedCANTalon m1, ExtendedCANTalon m2) {

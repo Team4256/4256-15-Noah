@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team4256.robot;
 
 import java.util.concurrent.ExecutorService;
@@ -69,6 +68,7 @@ public class Robot extends IterativeRobot {
 //	Toggle intakeToggle = new Toggle(xboxgun, 5);
 	Toggle lightToggle = new Toggle(xboxgun, 10);
 	Toggle switchToggle = new Toggle(xboxdrive, 4);
+	Toggle atToggle = new Toggle(xboxdrive, 9);
 	
 	AnalogInput PressureGauge = new AnalogInput(0);
 	
@@ -133,12 +133,18 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putString("            ","Vertical Tick Position");
     	SmartDashboard.putString("             ","AUTONOMOUS MODE");
     	
+    	SmartDashboard.getString("Drive Type", "Tank Mode");
     	
     	//test/configuration variables
     	SmartDashboard.putNumber("PORT", 0);
     	SmartDashboard.putNumber("S Module", 0);
     	SmartDashboard.putNumber("S Forward Channel", 0);
     	SmartDashboard.putNumber("S Reverse Channel", 0);
+    	
+    	SmartDashboard.putNumber("LeftFrontEnc", Robot.leftFront.getEncPosition());
+		SmartDashboard.putNumber("LeftBackEnc", Robot.leftBack.getEncPosition());
+		SmartDashboard.putNumber("RightFrontEnc", Robot.rightFront.getEncPosition());
+		SmartDashboard.putNumber("RightBackEnc", Robot.rightBack.getEncPosition());
     	
     	
     	
@@ -147,54 +153,58 @@ public class Robot extends IterativeRobot {
 	
     public static double AUTO_DRIVE_SPEED = .5042;
     public static double AUTO_DRIVE_TURN = .5;
+//    public static Thread autonomousThread;
     
     public void autonomousInit() {
     	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
     	switch(mode) {
     	case 0: //lift recycle bin
     		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
+////    	AutoDrive.turnRight(90);
+//    		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
+//    		AutoDrive.turnLeft(120);
     		break;
-    	case 1: //single recycle bin
+    	case 1: //single recycle bin and turn
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-//    		AutoDrive.goFoward(3000, AUTO_DRIVE_SPEED);
-//    		Timer.delay(1.25);
-//    		AutoDrive.goFoward(2250, AUTO_DRIVE_SPEED);
     		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 2: //single tote + recyle bin
     		AutoDrive.syncRecycleBinAndToteIntake();
-    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward(100, AUTO_DRIVE_SPEED);
     		Timer.delay(.5);
     		AutoDrive.turnRight(80);
-    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+700, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 3: //tri toter
-    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
-    		AutoDrive.liftAndGoToNextTote(2, AUTO_DRIVE_SPEED);
+    	case 3: //Recycle Bin (Drive Straight) 
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+//    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 0, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward(AutoDrive.AUTOZONE_DISTANCE, AUTO_DRIVE_SPEED);
+    		break; 
+    		//old trit-toter don't use
+//    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
+//    		AutoDrive.liftAndGoToNextTote(2, AUTO_DRIVE_SPEED);
 //    		AutoDrive.stackerToteLiftDown();
 //    		AutoDrive.stackerToteLiftUp(3);
-    		AutoDrive.intakeTote();
-    		AutoDrive.syncToteStackerLiftDown();
-    		AutoDrive.turnRight(90);
-    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
-    		break;
-    	case 4: //single recyle bin (over bumplet)
+//    		AutoDrive.intakeTote();
+//    		AutoDrive.syncToteStackerLiftDown();
+//    		AutoDrive.turnRight(90);
+//    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+//    		break;
+    	case 4: //single recyle bin (over scoring platform)
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goFoward(3000, AUTO_DRIVE_SPEED);
-    		Timer.delay(1.0);
-    		AutoDrive.goFowardToAutozoneAndDeploy(false, 1750, 90, AUTO_DRIVE_SPEED);
+//    		AutoDrive.goFoward(1500, AUTO_DRIVE_SPEED);
+//    		Timer.delay(1.0);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE+800, 90, AUTO_DRIVE_SPEED);
     		break;
-    	case 5: //single tote + recyle bin (over bumplet)
-    		//Timer.delay(3);
+    	case 5: //single tote + recyle bin (over scoring platform)
     		AutoDrive.syncRecycleBinAndToteIntake();
-    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
-    		Timer.delay(.5);
-    		AutoDrive.turnRight(80);
-    		AutoDrive.goFoward(5750, AUTO_DRIVE_SPEED); //go on bump
-    		Timer.delay(1.25);
-    		//AutoDrive.goFoward(1750, AUTO_DRIVE_SPEED); //go to autozone
-    		//AutoDrive.turnLeft(90);
-    		AutoDrive.goFowardToAutozoneAndDeploy(true, 1750, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward(100, AUTO_DRIVE_SPEED);
+    		Timer.delay(.7);
+    		AutoDrive.turnRight(65);
+    		Timer.delay(.3);
+//    		AutoDrive.goFoward(5750, AUTO_DRIVE_SPEED); //go on bump
+//    		Timer.delay(1.25);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+2300, 50, AUTO_DRIVE_SPEED); //+700 for being in line with totes, +100 for bump
 //    		AutoDrive.syncRecycleBinAndToteIntake();
 //    		AutoDrive.turnLeft(90);
 //    		AutoDrive.goBackwardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
@@ -212,13 +222,59 @@ public class Robot extends IterativeRobot {
     		AutoDrive.turnLeft(90);
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
+    	case 8: //single totes + recycle bin (same section)
+    		AutoDrive.intakeTote();
+    		AutoDrive.turnRight(180);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.turnLeft(90);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
+    		break;
+    	case 9: //3 grey tote + recyle bin (over close bump)
+    		//does 1 tote so far
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
+    		Timer.delay(.5);
+    		AutoDrive.turnRight(80);
+    		AutoDrive.goFoward(4000, AUTO_DRIVE_SPEED); //go on bump
+    		Timer.delay(1.25);
+    		AutoDrive.goFoward(9000, AUTO_DRIVE_SPEED); //go to grey totes
+    		AutoDrive.syncToteIntake();
+    		AutoDrive.turnRight(90, .1);
+    		AutoDrive.goFoward(200, .3);
+    		break;
+    	case 10: //lift recycle bin and go to feed
+    		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
+    		AutoDrive.turnRight(90);
+    		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
+    		AutoDrive.turnLeft(120);
+    		break;
+    	case 11:
+    		AutoDrive.moveMotorTimeBased(verticalLift, 3.6, -1);
+    		AutoDrive.turnLeft(55);
+    		Timer.delay(0.5);
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE+1900), AUTO_DRIVE_SPEED);
+    		Timer.delay(0.2);
+    		AutoDrive.turnLeft(45);
+    		AutoDrive.goFoward(400, AUTO_DRIVE_SPEED);
+    		Timer.delay(0.5);
+    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED*0.2);
+    		
+    		break;
     	default:
-//    		AutoDrive.stackerToteLiftUp(5);
+    		AutoDrive.goFoward(AutoDrive.AUTOZONE_DISTANCE, AUTO_DRIVE_SPEED);
     		break;
     	}
+//    	autonomousThread = new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+				
+//			}});
+//    	autonomousThread.run();
+    	
     }
     
     public void autonomousPeriodic() {
+    
 //    	Utility.configSolenoidPorts(.2);
     	//Utility.configMotorPorts(.5);
 
@@ -227,6 +283,7 @@ public class Robot extends IterativeRobot {
     
     
     public void teleopInit() {
+//    	autonomousThread.suspend();
     	cameraFeedPosition();
     }
 
@@ -242,6 +299,8 @@ public class Robot extends IterativeRobot {
     		SmartDashboard.putString("Driver Mode", "Dual Mode");
     		runSharedFunctions(xboxgun);
     	}
+    	
+		
     }
     
     
@@ -249,9 +308,14 @@ public class Robot extends IterativeRobot {
      * Controls the main functions in teleop. The joystick input is the joystick that is currently controlling the gunner functions
      */
     public void runSharedFunctions(DBJoystick joystick) {
-    	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor reduced to 0.5
-    	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
-       // drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
+    	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor
+    	if(atToggle.getState()) {
+        	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
+        	SmartDashboard.putString("Drive Type", "Arcade Drive");
+    	}else{
+    		drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
+    	    SmartDashboard.putString("Drive Type", "Tank Drive");
+    	}
     	//    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);

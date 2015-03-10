@@ -1,5 +1,47 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="843" y="118"/>
+		<width>10</width>
+		<height>452</height>
+		<property name="Image File" value="C:\Users\frc1\Desktop\blue_dot.png"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="1125" y="121"/>
+		<width>10</width>
+		<height>454</height>
+		<property name="Image File" value="C:\Users\frc1\Desktop\blue_dot.png"/>
+	</static-widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="518" y="8"/>
+		<width>950</width>
+		<height>568</height>
+		<property name="Image File" value="C:\Users\frc1\Desktop\line.png"/>
+	</static-widget>
+	<widget field="LeftBackEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="387"/>
+	</widget>
+	<widget field="LeftFrontEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="366"/>
+	</widget>
+	<widget field="RightBackEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="345"/>
+	</widget>
+	<widget field="RightFrontEnc" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="324"/>
+	</widget>
+	<widget field="Drive Mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="210"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
+		<location x="1216" y="657"/>
+		<width>118</width>
+		<height>62</height>
+		<property name="Image File" value="C:\Users\frc1\Desktop\DriveType.png"/>
+	</static-widget>
+	<widget field="Wheel Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="147"/>
+	</widget>
 	<widget field="TargetCenterY" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="303"/>
 	</widget>
@@ -18,12 +60,6 @@
 	<widget field="TargetWidth" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="168"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
-		<location x="761" y="239"/>
-		<width>333</width>
-		<height>233</height>
-		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\feederstationboxleft.png"/>
-	</static-widget>
 	<widget field="TargetFound" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="126"/>
 	</widget>
@@ -88,17 +124,11 @@
 		<property name="Font Size" value="18"/>
 	</widget>
 	<widget field="      " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="691" y="672"/>
+		<location x="690" y="675"/>
 		<width>208</width>
 		<height>47</height>
 		<property name="Font Size" value="32"/>
 	</widget>
-	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
-		<location x="725" y="241"/>
-		<width>345</width>
-		<height>232</height>
-		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\feederstationboxright.png"/>
-	</static-widget>
 	<widget field="Automatic Lift" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="0"/>
 	</widget>
@@ -188,7 +218,7 @@
 		<property name="Font Size" value="24"/>
 	</widget>
 	<widget field="Driver Mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="842" y="669"/>
+		<location x="840" y="670"/>
 		<width>213</width>
 		<height>55</height>
 		<property name="Foreground" value="0.255.255.255"/>
@@ -202,37 +232,18 @@
 		<property name="Color to show when true" value="51.255.0.255"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
-		<location x="1458" y="25"/>
+		<location x="1461" y="25"/>
+		<width>366</width>
+		<height>320</height>
 		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\AutoModes.png"/>
 	</static-widget>
-	<widget field="   " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="234" y="436"/>
-		<width>274</width>
-		<height>34</height>
-		<property name="Font Size" value="18"/>
-	</widget>
-	<widget field="  " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
-		<location x="235" y="481"/>
-		<width>271</width>
-		<property name="Font Size" value="18"/>
-	</widget>
-	<widget field="Lower Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="217" y="440"/>
-		<width>178</width>
-		<height>29</height>
-	</widget>
-	<widget field="Upper Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
-		<location x="213" y="481"/>
-		<width>180</width>
-		<height>27</height>
-	</widget>
 	<widget field="Automatic lift" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
 		<location x="296" y="315"/>
 		<width>94</width>
 		<height>32</height>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.VideoStreamViewerExtension">
-		<location x="504" y="11"/>
+		<location x="497" y="3"/>
 		<width>952</width>
 		<height>625</height>
 		<property name="Camera IP Address" value="10.42.56.20"/>
@@ -254,6 +265,35 @@
 		<location x="280" y="75"/>
 		<width>203</width>
 		<height>52</height>
+	</widget>
+	<widget field="   " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="233" y="438"/>
+		<width>274</width>
+		<height>34</height>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="  " type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="235" y="481"/>
+		<width>271</width>
+		<property name="Font Size" value="18"/>
+	</widget>
+	<widget field="Lower Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="212" y="440"/>
+		<width>182</width>
+		<height>32</height>
+	</widget>
+	<widget field="Upper Tote Stacker Limit Switch" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="212" y="481"/>
+		<width>180</width>
+		<height>27</height>
+	</widget>
+	<widget field="Drive Type" type="String" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="1282" y="670"/>
+		<width>205</width>
+		<height>63</height>
+		<property name="Foreground" value="255.255.0.255"/>
+		<property name="Background" value="0.0.0.255"/>
+		<property name="Font Size" value="24"/>
 	</widget>
 </dashboard>
 <live-window>
