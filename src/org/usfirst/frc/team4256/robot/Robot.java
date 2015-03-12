@@ -309,14 +309,14 @@ public class Robot extends IterativeRobot {
      */
     public void runSharedFunctions(DBJoystick joystick) {
     	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor
-    	if(atToggle.getState()) {
-        	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
-        	SmartDashboard.putString("Drive Type", "Arcade Drive");
-    	}else{
-    		drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
-    	    SmartDashboard.putString("Drive Type", "Tank Drive");
-    	}
-    	//    	Utility.runMotor(xboxgun, 3, 1, wheelIntake, INTAKE_SPEED); // button 3 on xboxgun (X) will run motor in forward direction, button 1 will reverse. wheelIntake represents motor type and INTAKE_SPEED represents the motor's speed
+    	drive.mecanumDrive_Cartesian(xboxdrive.getRawAxis(0)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(4), 0);
+//    	if(atToggle.getState()) {
+//        	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
+//        	SmartDashboard.putString("Drive Type", "Arcade Drive");
+//    	}else{
+//    		drive.tankDrive(-xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(5)*driveSpeedScale, true);
+//    	    SmartDashboard.putString("Drive Type", "Tank Drive");
+//    	}
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
@@ -427,17 +427,40 @@ public class Robot extends IterativeRobot {
     /**
      * Moves the stacker tote lift up or down
      */
+    int FEED_UP_STACKER_POSITION = (int) (AutoDrive.STACKER_TOTE_BOTTOM_POSITION + AutoDrive.STACKER_TOTE_LIFT_LEVEL_DISTANCE*2.8);
+    int FEED_DOWN_STACKER_POSITION = (int) (AutoDrive.STACKER_TOTE_BOTTOM_POSITION + AutoDrive.STACKER_TOTE_LIFT_LEVEL_DISTANCE*1.8);
+    boolean stackerGoingToLevel = false;
+    int stackerAutomaticFeedStage = 1;
     public void stackerToteLift(DBJoystick joystick) {
 //    	stackerToteLift.update(-STACKER_TOTE_SPEED);
     	boolean lwrLimitSwitch = lowerStackerLimitSwitch.get();
     	boolean upperLimitSwitch = upperStackerLimitSwitch.get();
-    	Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && upperLimitSwitch, stackerToteLift, STACKER_TOTE_SPEED);
-//    	if(joystick.axisPressed(3)) {
-//    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MAX_HEIGHT);
-//    	}else if(joystick.axisPressed(2) && StackerToteLiftCurrentLimitSwitch.get()) {
-//    		//stackerToteLift.setEncPosition(STACKER_TOTE_LIFT_MIN_HEIGHT);
+//    	if(xboxgun.getRawButton(7)) {
+//    		stackerGoingToLevel = true;
+//    		//reset feed stage if not currently running
+//    		if(stackerAutomaticFeedStage == 3) {
+//    			stackerAutomaticFeedStage = 1;
+//    		}
+//    	}
+//    	if(stackerGoingToLevel) {
+//    		//move stacker down to 2nd tote
+//    		if(stackerAutomaticFeedStage == 1) {
+//    			if(stackerToteLift.getEncPosition() > FEED_DOWN_STACKER_POSITION && lwrLimitSwitch) {
+//    				stackerToteLift.set(-STACKER_TOTE_SPEED);
+//        		}
+//    			stackerAutomaticFeedStage = 2;
+//    		//move stacker up to lift totes
+//    		}else if(stackerAutomaticFeedStage == 2) {
+//    			if(stackerToteLift.getEncPosition() < FEED_UP_STACKER_POSITION && upperLimitSwitch) {
+//    				stackerToteLift.set(STACKER_TOTE_SPEED);
+//        		}
+//    			stackerAutomaticFeedStage = 3;
+//    		}else{
+//    			stackerToteLift.set(0);
+//    		}
+//    		stackerGoingToLevel = false;
 //    	}else{
-//    		stackerToteLift.set(0);
+    		Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && upperLimitSwitch, stackerToteLift, STACKER_TOTE_SPEED);
 //    	}
 
         SmartDashboard.putBoolean("Upper Tote Stacker Limit Switch", upperLimitSwitch);

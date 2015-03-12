@@ -10,8 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class AutoDrive {
 	public static int VERTICAL_LIFT_UP_POSITION = 2000;//value needs testing
 	public static int VERTICAL_LIFT_DOWN_POSITION = 0;//value needs testing
-	public static int STACKER_TOTE_LIFT_LEVEL_POSITION = 2000;//value needs testing
-	public static int STACKER_TOTE_BOTTOM_POSITION = 0;//value needs testing
+	public static int STACKER_TOTE_LIFT_LEVEL_DISTANCE = 1000;//value needs testing
+	public static int STACKER_TOTE_BOTTOM_POSITION = -1000;//value needs testing
 	public static double TOTE_INTAKE_TIME = 2.5;
 	public static double TOTE_SPIT_TIME = 1;
 	
@@ -134,12 +134,12 @@ public class AutoDrive {
     }
 	
 	public static void stackerToteLiftUp(int level) {
-		moveEncodedMotorUp(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.upperStackerLimitSwitch,
+		moveEncodedMotorUp(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_DISTANCE*level, Robot.upperStackerLimitSwitch,
 				-Robot.STACKER_TOTE_SPEED/5); //SLO MO
     }
 	
 	public static void stackerToteLiftDown(int level) {
-		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_POSITION*level, Robot.lowerStackerLimitSwitch,
+		moveEncodedMotorDown(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_DISTANCE*level, Robot.lowerStackerLimitSwitch,
 				Robot.STACKER_TOTE_SPEED);
     }
 	
