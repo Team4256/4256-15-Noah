@@ -16,10 +16,12 @@ public class AutoDrive {
 	public static double TOTE_SPIT_TIME = 1;
 	
 	//private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
-	private static int TOTE_TO_TOTE_DISTANCE = 1400; //comp
+//	private static int TOTE_TO_TOTE_DISTANCE = 1400; //comp arkansas robot #1 omni wheels
+	private static int TOTE_TO_TOTE_DISTANCE = 1850;
 
-//	public static int AUTOZONE_DISTANCE = 4200; //pre comp
-	public static int AUTOZONE_DISTANCE = 2200; //comp 
+//	public static int AUTOZONE_DISTANCE = 4200; //pre comp old don't use me
+//	public static int AUTOZONE_DISTANCE = 2200; //comp arkansas robot #1 omni wheels
+	public static int AUTOZONE_DISTANCE = 3200; //comp st louis mecanum wheels
 	
     public static ExecutorService exeSrvc = Executors.newCachedThreadPool();
 	
@@ -57,25 +59,41 @@ public class AutoDrive {
 				//if(level >= 2) {
 					stackerToteLiftDown();
 				//}
-				stackerToteLiftUp(level);
+////				stackerToteLiftUp(level);
+				moveMotorTimeBased(Robot.stackerToteLift, .8*level, -Robot.STACKER_TOTE_SPEED/4);
 //			}});
     }
     
 	////////////////COMBO MOVES////////////////
-    public static void liftAndGoToNextTote(int level, double speed) {
+    public static void liftAndGoToNextTote(double speed) {
 //    	syncToteIntake();
     	intakeTote();
-    	goToNextTote(level, speed);
+    	goToNextTote(speed);
     }
-	public static void goToNextTote(int level, double speed) {
-		goFoward(TOTE_TO_TOTE_DISTANCE-500, speed);
+    
+	public static void goToNextTote(double speed) {
+		goFoward(TOTE_TO_TOTE_DISTANCE-100, speed);
 		openArms();
-		syncToteStackerLiftDownAndTo(level);
-		goFoward(500, speed);
+		syncToteStackerLiftDownAndTo(1);
+		goFoward(100, speed);
+	}
+	
+	static int STEER_DISTANCE = 100;
+	public static void steerToNextTote(double speed) {
+//		turnRight(45);
+		goSidewaysRight(STEER_DISTANCE, speed);
+		goFoward(100, speed);
+//		turnLeft(45);
+		goSidewaysLeft(STEER_DISTANCE, speed);
+		goFoward(TOTE_TO_TOTE_DISTANCE-200, speed);
+		openArms();
+		syncToteStackerLiftDownAndTo(1);
+		goFoward(100, speed);
 	}
 	
 	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
+		Timer.delay(.5);
 		turnRight(turnAngle);
 		if(deployTotes) {
 			deployTotes(distance, speed);
@@ -197,7 +215,9 @@ public class AutoDrive {
     
     ////////////////ENCODER BASED DRIVE////////////////
     static int ENC_ACCURACY_RANGE = 10;
-    static int RIGHT_ANGLE_TURN_TICKS = 1396;//1466
+//    static int RIGHT_ANGLE_TURN_TICKS = 1396;//omni wheels arkansas
+    static int RIGHT_ANGLE_TURN_TICKS = 2370;//mecanum wheels
+    
     static double TURN_SPEED = .342;
     
     public static void goFoward(int ticks, double speed) {
@@ -224,6 +244,49 @@ public class AutoDrive {
     public static void turnRight(double degrees, double speed) {
     	int turnTicks = (int) (degrees*RIGHT_ANGLE_TURN_TICKS/90);
     	go(turnTicks, -turnTicks, speed, -speed, 1, -1);
+    }
+    
+    public void goSideways(int ticks, int speed) {
+//    	boolean notFinished = true;
+    	while(getAverageDistance(ticks, Robot.leftFront, Robot.leftFront) > ENC_ACCURACY_RANGE) {
+    		Robot.drive.mecanumDrive_Cartesian(speed, 0, 0, 0);
+    	}
+    }
+    
+    public static void goSidewaysRight(int ticks, double speed) {
+    	goSideways(ticks, speed, -1, 1);
+    }
+    
+    public static void goSidewaysLeft(int d, double speed) {
+    	goSideways(d, speed, 1, -1);
+    }
+    
+    private static void goSideways(int ticks, double speed, double frontRightDirection, double frontLeftirection) {
+    	resetEncodersToZero();
+    	//wait till distance is reached
+    	boolean set1NotFinished = true;
+    	boolean set2NotFinished = true;
+    	while(set1NotFinished && set2NotFinished) {
+    		//start motors
+        	setMotors(speed*frontRightDirection, Robot.rightFront, Robot.leftBack);
+        	setMotors(speed*frontLeftirection, Robot.leftFront, Robot.rightBack);
+        	//check if distance is reached
+    		if(set1NotFinished) {
+    			int set1DistanceLeft = getAverageDistance(ticks, Robot.rightFront, Robot.leftBack);
+    			set1NotFinished = (set1DistanceLeft*frontRightDirection > ENC_ACCURACY_RANGE);
+    		}
+    		if(set2NotFinished) {
+    			int set2DistanceLeft = getAverageDistance(ticks, Robot.leftFront, Robot.rightBack);
+    			set2NotFinished = (set2DistanceLeft*frontLeftirection > ENC_ACCURACY_RANGE);
+    		}
+    		SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftFront.getEncPosition());
+    		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
+    		SmartDashboard.putNumber("AutoRightFrontEnc", Robot.rightFront.getEncPosition());
+    		SmartDashboard.putNumber("AutoRightBackEnc", Robot.rightBack.getEncPosition());
+    	}
+    	//stop motors
+    	setMotors(0, Robot.rightFront, Robot.leftBack);
+    	setMotors(0, Robot.leftFront, Robot.rightBack);
     }
     
     //private

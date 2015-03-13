@@ -194,7 +194,7 @@ public class Robot extends IterativeRobot {
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
 //    		AutoDrive.goFoward(1500, AUTO_DRIVE_SPEED);
 //    		Timer.delay(1.0);
-    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE+800, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*2, 90, AUTO_DRIVE_SPEED); // was +800.
     		break;
     	case 5: //single tote + recyle bin (over scoring platform)
     		AutoDrive.syncRecycleBinAndToteIntake();
@@ -217,7 +217,7 @@ public class Robot extends IterativeRobot {
     		AutoDrive.syncRecycleBinAndToteIntake();
     		AutoDrive.turnLeft(160, AutoDrive.TURN_SPEED);
     		AutoDrive.turnLeft(20, .1);
-    		AutoDrive.goToNextTote(1, AUTO_DRIVE_SPEED);
+    		AutoDrive.goToNextTote(AUTO_DRIVE_SPEED);
     		AutoDrive.intakeTote();
     		AutoDrive.turnLeft(90);
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
@@ -260,8 +260,20 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED*0.2);
     		
     		break;
+    	case 15:
+    		AutoDrive.turnRight(3600);
+    		break;
+    	case 20:
+    		AutoDrive.liftAndGoToNextTote(AUTO_DRIVE_SPEED);
+//    		AutoDrive.liftAndGoToNextTote(AUTO_DRIVE_SPEED);
+//    		AutoDrive.syncToteStackerLiftDownAndTo(1);
+//    		AutoDrive.intakeTote();
+//    		AutoDrive.syncToteStackerLiftDown();
+//    		AutoDrive.turnRight(90);
+//    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		break;
     	default:
-    		AutoDrive.goFoward(AutoDrive.AUTOZONE_DISTANCE, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward(1000, AUTO_DRIVE_SPEED);
     		break;
     	}
 //    	autonomousThread = new Thread(new Runnable() {
@@ -309,7 +321,7 @@ public class Robot extends IterativeRobot {
      */
     public void runSharedFunctions(DBJoystick joystick) {
     	double driveSpeedScale = (xboxdrive.getRawButton(5)? .5 : .75); // scaling factor
-    	drive.mecanumDrive_Cartesian(xboxdrive.getRawAxis(0)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(4), 0);
+    	drive.mecanumDrive_Cartesian(xboxdrive.getRawAxis(0)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, xboxdrive.getRawAxis(4)*driveSpeedScale, 0);
 //    	if(atToggle.getState()) {
 //        	drive.arcadeDrive(xboxdrive.getRawAxis(4)*driveSpeedScale, xboxdrive.getRawAxis(1)*driveSpeedScale, true); // left stick on Xbox controls forward and backward direction. right sticks controls rotation.
 //        	SmartDashboard.putString("Drive Type", "Arcade Drive");

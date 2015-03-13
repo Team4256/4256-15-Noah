@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Joystick.RumbleType;
  *
  */
 public class DBJoystick extends Joystick {
-	public static double DEADBAND = .1;
+	public static double DEADBAND = .2;
 	public static double DETENT = 0.7;
 	public static int NORTH = 0;
 	public static int NORTH_EAST = 45;
