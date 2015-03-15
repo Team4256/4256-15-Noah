@@ -12,12 +12,12 @@ public class AutoDrive {
 	public static int VERTICAL_LIFT_DOWN_POSITION = 0;//value needs testing
 	public static int STACKER_TOTE_LIFT_LEVEL_DISTANCE = 1000;//value needs testing
 	public static int STACKER_TOTE_BOTTOM_POSITION = -1000;//value needs testing
-	public static double TOTE_INTAKE_TIME = 2.5;
+	public static double TOTE_INTAKE_TIME = 5;
 	public static double TOTE_SPIT_TIME = 1;
 	
 	//private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
 //	private static int TOTE_TO_TOTE_DISTANCE = 1400; //comp arkansas robot #1 omni wheels
-	private static int TOTE_TO_TOTE_DISTANCE = 1850;
+	public static int TOTE_TO_TOTE_DISTANCE = 1650;//1850
 
 //	public static int AUTOZONE_DISTANCE = 4200; //pre comp old don't use me
 //	public static int AUTOZONE_DISTANCE = 2200; //comp arkansas robot #1 omni wheels
@@ -54,45 +54,77 @@ public class AutoDrive {
     }
     
     public static void syncToteStackerLiftDownAndTo(final int level) {
-//    	exeSrvc.execute(new Runnable() {
-//			public void run() {
-				//if(level >= 2) {
-					stackerToteLiftDown();
-				//}
-////				stackerToteLiftUp(level);
-				moveMotorTimeBased(Robot.stackerToteLift, .8*level, -Robot.STACKER_TOTE_SPEED/4);
-//			}});
+    	exeSrvc.execute(new Runnable() {
+			public void run() {
+//				if(level >= 2) {
+				stackerToteLiftDown();
+//				}
+//				stackerToteLiftUp(level);
+				moveMotorTimeBased(Robot.stackerToteLift, 1.1*level, -Robot.STACKER_TOTE_SPEED);
+			}});
     }
     
 	////////////////COMBO MOVES////////////////
-    public static void liftAndGoToNextTote(double speed) {
-//    	syncToteIntake();
-    	intakeTote();
-    	goToNextTote(speed);
+    public static void recycleBinAndTwoTote() {
+    	Robot.enableBreakMode(true);
+		AutoDrive.syncRecycleBinAndToteIntake();
+//		Timer.delay(.2);
+		AutoDrive.goFoward(120, Robot.AUTO_DRIVE_SPEED);
+		Timer.delay(.8);
+		AutoDrive.syncToteStackerLiftDownAndTo(1);
+		AutoDrive.turnLeft(173, .57);//145
+		Timer.delay(.4);
+		AutoDrive.goToNextTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), Robot.AUTO_DRIVE_SPEED);
+		AutoDrive.syncToteIntake();
     }
     
-	public static void goToNextTote(double speed) {
-		goFoward(TOTE_TO_TOTE_DISTANCE-100, speed);
+    public static void liftAndGoToNextTote(int distance, double speed) {
+//    	syncToteIntake();
+    	intakeTote();
+    	goToNextTote(distance, speed);
+    }
+    
+	public static void goToNextTote(int distance, double speed) {
 		openArms();
-		syncToteStackerLiftDownAndTo(1);
+		goFoward(distance-100, speed);
+		syncToteIntake();
+		Timer.delay(.7);
 		goFoward(100, speed);
 	}
 	
-	static int STEER_DISTANCE = 100;
-	public static void steerToNextTote(double speed) {
+	static int STEER_DISTANCE = 1600;
+	public static void steerToNextTote(double speed, boolean steerLeft) {
 //		turnRight(45);
-		goSidewaysRight(STEER_DISTANCE, speed);
-		goFoward(100, speed);
 //		turnLeft(45);
-		goSidewaysLeft(STEER_DISTANCE, speed);
-		goFoward(TOTE_TO_TOTE_DISTANCE-200, speed);
-		openArms();
-		syncToteStackerLiftDownAndTo(1);
-		goFoward(100, speed);
+		if(steerLeft) {
+			goSidewaysLeft(STEER_DISTANCE, .7);
+//			Timer.delay(.2);
+			goFoward(800, speed);
+			openArms();
+			Timer.delay(.2);
+//			exeSrvc.execute(new Runnable() {
+//				public void run() {
+//
+//					Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
+//					Timer.delay(.5);
+//					Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
+//				}});
+			Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
+			goSidewaysRight(STEER_DISTANCE+700, .7);
+//			turnLeft(5);
+			Robot.wheelIntake.set(0);
+		}else{
+			goSidewaysRight(STEER_DISTANCE, speed);
+			goFoward(200, speed);
+			goSidewaysLeft(STEER_DISTANCE, speed);
+		}
+		Timer.delay(.1);
+		goFoward(600, speed);
 	}
 	
 	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
+		AutoDrive.syncToteStackerLiftDown();
 		Timer.delay(.5);
 		turnRight(turnAngle);
 		if(deployTotes) {
@@ -118,8 +150,7 @@ public class AutoDrive {
 	
 	////////////////TOTE INTAKE////////////////
 	public static void intakeTote() {
-		Robot.leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
-		Robot.rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
+		closeArms();
 		Robot.wheelIntake.set(-Robot.WHEEL_INTAKE_SPEED);
 		Robot.toteRoller.set(Robot.TOTE_ROLLER_SPEED);
 		Timer.delay(TOTE_INTAKE_TIME);
@@ -130,6 +161,11 @@ public class AutoDrive {
 	public static void openArms() {
 		Robot.leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse);
 		Robot.rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse);
+	}
+	
+	public static void closeArms() {
+		Robot.leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
+		Robot.rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
 	}
 	
 	public static void spitTote() {
@@ -153,7 +189,7 @@ public class AutoDrive {
 	
 	public static void stackerToteLiftUp(int level) {
 		moveEncodedMotorUp(Robot.stackerToteLift, STACKER_TOTE_BOTTOM_POSITION + STACKER_TOTE_LIFT_LEVEL_DISTANCE*level, Robot.upperStackerLimitSwitch,
-				-Robot.STACKER_TOTE_SPEED/5); //SLO MO
+				-Robot.STACKER_TOTE_SPEED);
     }
 	
 	public static void stackerToteLiftDown(int level) {
@@ -162,7 +198,7 @@ public class AutoDrive {
     }
 	
 	public static void stackerToteLiftDown() {
-		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, Robot.STACKER_TOTE_SPEED/5); //SLO MO
+		moveMotorToLimitSwitch(Robot.stackerToteLift, Robot.lowerStackerLimitSwitch, Robot.STACKER_TOTE_SPEED);
     }
 	
 	public static void moveMotorTimeBased(EncodedMotor m, double time, double speed) {
@@ -257,11 +293,11 @@ public class AutoDrive {
     	goSideways(ticks, speed, -1, 1);
     }
     
-    public static void goSidewaysLeft(int d, double speed) {
-    	goSideways(d, speed, 1, -1);
+    public static void goSidewaysLeft(int ticks, double speed) {
+    	goSideways(ticks, speed, 1, -1);
     }
     
-    private static void goSideways(int ticks, double speed, double frontRightDirection, double frontLeftirection) {
+    private static void goSideways(int ticks, double speed, double frontRightDirection, double frontLeftDirection) {
     	resetEncodersToZero();
     	//wait till distance is reached
     	boolean set1NotFinished = true;
@@ -269,15 +305,15 @@ public class AutoDrive {
     	while(set1NotFinished && set2NotFinished) {
     		//start motors
         	setMotors(speed*frontRightDirection, Robot.rightFront, Robot.leftBack);
-        	setMotors(speed*frontLeftirection, Robot.leftFront, Robot.rightBack);
+        	setMotors(speed*frontLeftDirection, Robot.leftFront, Robot.rightBack);
         	//check if distance is reached
     		if(set1NotFinished) {
     			int set1DistanceLeft = getAverageDistance(ticks, Robot.rightFront, Robot.leftBack);
-    			set1NotFinished = (set1DistanceLeft*frontRightDirection > ENC_ACCURACY_RANGE);
+    			set1NotFinished = (set1DistanceLeft > ENC_ACCURACY_RANGE);
     		}
     		if(set2NotFinished) {
     			int set2DistanceLeft = getAverageDistance(ticks, Robot.leftFront, Robot.rightBack);
-    			set2NotFinished = (set2DistanceLeft*frontLeftirection > ENC_ACCURACY_RANGE);
+    			set2NotFinished = (set2DistanceLeft > ENC_ACCURACY_RANGE);
     		}
     		SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftFront.getEncPosition());
     		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
