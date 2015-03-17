@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AutoDrive {
@@ -27,15 +28,15 @@ public class AutoDrive {
 	
     ////////////////SYNCHRONIZED MOVES////////////////
     public static void syncRecycleBinAndToteIntake() {
-    	syncRecycleBin();
+    	syncRecycleBin(1.9);
 		syncToteIntake();
 		Timer.delay(1); //1.5 seconds less than tote intake time!
     }
     
-    public static void syncRecycleBin() {
+    public static void syncRecycleBin(final double liftTime) {
 		exeSrvc.execute(new Runnable() {
 			public void run() {
-				moveMotorTimeBased(Robot.verticalLift, 1.9, -1);
+				moveMotorTimeBased(Robot.verticalLift, liftTime, -1);
 			}});
     }
     
@@ -53,14 +54,14 @@ public class AutoDrive {
 			}});
     }
     
-    public static void syncToteStackerLiftDownAndTo(final int level) {
+    public static void syncToteStackerLiftDownAndTo(final double level) {
     	exeSrvc.execute(new Runnable() {
 			public void run() {
 //				if(level >= 2) {
 				stackerToteLiftDown();
 //				}
 //				stackerToteLiftUp(level);
-				moveMotorTimeBased(Robot.stackerToteLift, 1.1*level, -Robot.STACKER_TOTE_SPEED);
+				moveMotorTimeBased(Robot.stackerToteLift, 1.2*level, -Robot.STACKER_TOTE_SPEED);
 			}});
     }
     
@@ -72,7 +73,7 @@ public class AutoDrive {
 		AutoDrive.goFoward(120, Robot.AUTO_DRIVE_SPEED);
 		Timer.delay(.8);
 		AutoDrive.syncToteStackerLiftDownAndTo(1);
-		AutoDrive.turnLeft(173, .57);//145
+		AutoDrive.turnLeft(165, .57);//170 (was working until 3/16)
 		Timer.delay(.4);
 		AutoDrive.goToNextTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), Robot.AUTO_DRIVE_SPEED);
 		AutoDrive.syncToteIntake();
@@ -97,9 +98,10 @@ public class AutoDrive {
 //		turnRight(45);
 //		turnLeft(45);
 		if(steerLeft) {
-			goSidewaysLeft(STEER_DISTANCE, .7);
+			goSidewaysLeft((int) (STEER_DISTANCE*1.3), .7);
+//			Robot.drive.mecanumDrive_Cartesian(.7, 0, 0, 0);
 //			Timer.delay(.2);
-			goFoward(800, speed);
+			goFoward(TOTE_TO_TOTE_DISTANCE/2, speed);//800
 			openArms();
 			Timer.delay(.2);
 //			exeSrvc.execute(new Runnable() {
@@ -110,8 +112,8 @@ public class AutoDrive {
 //					Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
 //				}});
 			Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
-			goSidewaysRight(STEER_DISTANCE+700, .7);
-//			turnLeft(5);
+			goSidewaysRight((int) (STEER_DISTANCE*1.5), .7);//+700
+//			turnRight(5);
 			Robot.wheelIntake.set(0);
 		}else{
 			goSidewaysRight(STEER_DISTANCE, speed);
@@ -119,14 +121,14 @@ public class AutoDrive {
 			goSidewaysLeft(STEER_DISTANCE, speed);
 		}
 		Timer.delay(.1);
-		goFoward(600, speed);
+		goFoward((int) (TOTE_TO_TOTE_DISTANCE*.7), speed);//600
 	}
 	
 	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
 		AutoDrive.syncToteStackerLiftDown();
 		Timer.delay(.5);
-		turnRight(turnAngle);
+		turnRight(90, .8);
 		if(deployTotes) {
 			deployTotes(distance, speed);
 			goReverse(100, speed);
@@ -153,9 +155,9 @@ public class AutoDrive {
 		closeArms();
 		Robot.wheelIntake.set(-Robot.WHEEL_INTAKE_SPEED);
 		Robot.toteRoller.set(Robot.TOTE_ROLLER_SPEED);
-		Timer.delay(TOTE_INTAKE_TIME);
-		Robot.wheelIntake.set(0);
-		Robot.toteRoller.set(0);
+//		Timer.delay(TOTE_INTAKE_TIME);
+//		Robot.wheelIntake.set(0);
+//		Robot.toteRoller.set(0);
     }
 	
 	public static void openArms() {
@@ -356,6 +358,38 @@ public class AutoDrive {
     		if(rightNotFinished) {
     			int rightDistanceLeft = getAverageDistance(rTicks, Robot.rightBack, Robot.rightFront);
     			rightNotFinished = (rightDistanceLeft*rightDirection > ENC_ACCURACY_RANGE);
+    		}
+    		SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftFront.getEncPosition());
+    		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
+    		SmartDashboard.putNumber("AutoRightFrontEnc", Robot.rightFront.getEncPosition());
+    		SmartDashboard.putNumber("AutoRightBackEnc", Robot.rightBack.getEncPosition());
+    	}
+    	//stop motors
+    	setMotors(0, Robot.leftBack, Robot.leftFront);
+    	setMotors(0, Robot.rightBack, Robot.rightFront);
+    }
+    
+    private static NetworkTable netTable = NetworkTable.getTable("SmartDashboard");
+    public static void goFowardAndAlignToTote(int ticks, double speed) {
+    	resetEncodersToZero();
+//    	//start motors
+//    	setMotors(lSpeed, Robot.leftBack, Robot.leftFront);
+//    	setMotors(rSpeed, Robot.rightBack, Robot.rightFront);
+    	//wait till distance is reached
+    	boolean leftNotFinished = true;
+    	boolean rightNotFinished = true;
+    	while(leftNotFinished && rightNotFinished) {
+    		//start motors
+        	setMotors(speed*netTable.getNumber("LeftOffset"), Robot.leftBack, Robot.leftFront);
+        	setMotors(speed*netTable.getNumber("RightOffset"), Robot.rightBack, Robot.rightFront);
+        	//check if distance is reached
+    		if(leftNotFinished) {
+    			int leftDistanceLeft = getAverageDistance(ticks, Robot.leftBack, Robot.leftFront);
+    			leftNotFinished = (leftDistanceLeft > ENC_ACCURACY_RANGE);
+    		}
+    		if(rightNotFinished) {
+    			int rightDistanceLeft = getAverageDistance(ticks, Robot.rightBack, Robot.rightFront);
+    			rightNotFinished = (rightDistanceLeft > ENC_ACCURACY_RANGE);
     		}
     		SmartDashboard.putNumber("AutoLeftFrontEnc", Robot.leftFront.getEncPosition());
     		SmartDashboard.putNumber("AutoLeftBackEnc", Robot.leftBack.getEncPosition());
