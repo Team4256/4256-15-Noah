@@ -168,30 +168,20 @@ public class Robot extends IterativeRobot {
     		break;
     	case 1: //single recycle bin and turn
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 55, AUTO_DRIVE_SPEED);
     		break;
     	case 2: //single tote + recyle bin
     		AutoDrive.syncRecycleBinAndToteIntake();
     		AutoDrive.goFoward(100, AUTO_DRIVE_SPEED);
     		Timer.delay(.5);
     		AutoDrive.turnRight(80);
-    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+700, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE*1.5, 55, AUTO_DRIVE_SPEED);
     		break;
     	case 3: //Recycle Bin (Drive Straight) 
     		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 0, AUTO_DRIVE_SPEED);
-    		AutoDrive.goFoward(AutoDrive.AUTOZONE_DISTANCE, AUTO_DRIVE_SPEED);
-    		break; 
-    		//old trit-toter don't use
-//    		AutoDrive.liftAndGoToNextTote(1, AUTO_DRIVE_SPEED);
-//    		AutoDrive.liftAndGoToNextTote(2, AUTO_DRIVE_SPEED);
-//    		AutoDrive.stackerToteLiftDown();
-//    		AutoDrive.stackerToteLiftUp(3);
-//    		AutoDrive.intakeTote();
-//    		AutoDrive.syncToteStackerLiftDown();
-//    		AutoDrive.turnRight(90);
-//    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
-//    		break;
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*.95), AUTO_DRIVE_SPEED);
+    		break;
     	case 4: //single recyle bin (over scoring platform)
 //    		AutoDrive.syncRecycleBin(3.42);
 //    		Timer.delay(.4);
@@ -229,11 +219,10 @@ public class Robot extends IterativeRobot {
     		break;
     	case 7: //two totes + recycle bin
     		AutoDrive.recycleBinAndTwoTote();
-    		
-//    		Timer.delay(1);
-    		AutoDrive.goReverse((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE), AUTO_DRIVE_SPEED);
-    		AutoDrive.turnLeft(90, .57);
-    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE*2, 90, AUTO_DRIVE_SPEED);
+    		Timer.delay(.5);
+    		AutoDrive.goReverse((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*1.3), AUTO_DRIVE_SPEED);
+    		AutoDrive.turnLeft(105, .8);
+    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE*2, 80, AUTO_DRIVE_SPEED);
     		break;
     	case 8: //single totes + recycle bin (same section)
     		AutoDrive.intakeTote();
@@ -261,30 +250,42 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
     		AutoDrive.turnLeft(120);
     		break;
-    	case 11:
-    		AutoDrive.moveMotorTimeBased(verticalLift, 3.6, -1);
-    		AutoDrive.turnLeft(55);
+    	case 11: //center recycle bin to far left side
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
+    		AutoDrive.turnLeft(35);
     		Timer.delay(0.5);
-    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE+1900), AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*1.86), AUTO_DRIVE_SPEED); //AutoZone distance + 1900 (Arkansas)
     		Timer.delay(0.2);
     		AutoDrive.turnLeft(45);
-    		AutoDrive.goFoward(400, AUTO_DRIVE_SPEED);
-    		Timer.delay(0.5);
-    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED*0.2);
+    		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
+    		//Timer.delay(0.5);
+    		//AutoDrive.goFoward(150, AUTO_DRIVE_SPEED*0.2);
     		
     		break;
-    	case 12:
+    	case 12: //center recyle bin to center field
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.2, 74, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*.6), AUTO_DRIVE_SPEED);
+    		break;
+    	case 15:
+    		enableBreakMode(true);
+    		AutoDrive.turnRight(360, .8);
+    		break;
+    	case 18:
     		AutoDrive.moveMotorTimeBased(verticalLift, 3.42, -1);
     		AutoDrive.goSidewaysLeft((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*0.5), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.turnLeft(145);
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2), AUTO_DRIVE_SPEED);
     		break;
-    	case 15:
-    		AutoDrive.turnRight(3600);
-    		break;
     	case 20: //3 tote + 1 bin (over bump)
+    		//first two totes
     		AutoDrive.recycleBinAndTwoTote();
-    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
+    		//AutoDrive.sycnToteSpewAlign();
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
+    		//3rd tote
     		AutoDrive.syncToteStackerLiftDownAndTo(1.08);
     		AutoDrive.steerToNextTote(AUTO_DRIVE_SPEED, true);
     		Timer.delay(.2);
@@ -292,18 +293,13 @@ public class Robot extends IterativeRobot {
     		Timer.delay(.3);
     		AutoDrive.goFoward(120, AUTO_DRIVE_SPEED);
     		//to autozone
-    		AutoDrive.turnLeft(42, 1);
+    		AutoDrive.turnRight(42, .8);
 //    		AutoDrive.goFoward(400, AUTO_DRIVE_SPEED);
-    		AutoDrive.exeSrvc.execute(new Runnable() {
-				public void run() {
-					wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);//spit partially
-					Timer.delay(.5);
-					wheelIntake.set(-Robot.WHEEL_INTAKE_SPEED);//continue intake
-				}});
+    		AutoDrive.sycnToteSpewAlign();//here
     		Timer.delay(.1);
-    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*2.6), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2.6), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.syncToteStackerLiftDown();
-    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*.8), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.8), AUTO_DRIVE_FAST_SPEED);
 //    		AutoDrive.turnRight(60, 1);
     		AutoDrive.spitTote();
     		AutoDrive.goReverse(300, AUTO_DRIVE_SPEED);
@@ -374,13 +370,6 @@ public class Robot extends IterativeRobot {
 //    		AutoDrive.syncToteStackerLiftDownAndTo(1);
 //    		AutoDrive.goFowardAndAlignToTote(AutoDrive.TOTE_TO_TOTE_DISTANCE, .2);
     		
-//    		double speed = .7;
-//    		long currentTime = System.currentTimeMillis();
-//    		while(currentTime-System.currentTimeMillis()<700) {
-//    			Robot.drive.mecanumDrive_Cartesian(0, 0, 0, 0);
-//    		}
-//			Robot.drive.mecanumDrive_Cartesian(0, 0, 0, 0);
-//    		break;
     	}
 //    	autonomousThread = new Thread(new Runnable() {
 //			@Override
@@ -506,12 +495,12 @@ public class Robot extends IterativeRobot {
         	SmartDashboard.putString("Vertical Lift Direction", "Down");
     	}else if(joystickPOV == DBJoystick.EAST) {
     		automaticLift = true;
-    		lowerVertOutput();
-        	SmartDashboard.putString("Vertical Lift Direction", "Auto Down");
-    	}else if(joystickPOV == DBJoystick.WEST) {
-    		automaticLift = true;
     		raiseVertOutput();
         	SmartDashboard.putString("Vertical Lift Direction", "Auto Up");
+    	}else if(joystickPOV == DBJoystick.WEST) {
+    		automaticLift = true;
+    		lowerVertOutput();
+        	SmartDashboard.putString("Vertical Lift Direction", "Auto Down");
     	}else{
     		//sets the speed value to 0 if not in automatic mode
     		if(!automaticLift) {
