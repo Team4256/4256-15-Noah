@@ -285,36 +285,28 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
 //    		AutoDrive.sycnToteSpewAlign();
     		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
+    		
     		//3rd tote
     		AutoDrive.syncToteStackerLiftDownAndTo(1.08);
     		AutoDrive.steerToNextTote(AUTO_DRIVE_SPEED, true);
-    		Timer.delay(.2);
+//    		Timer.delay(.2);
     		AutoDrive.syncToteIntake();
     		Timer.delay(.3);
-    		AutoDrive.goFoward(120, AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.7), AUTO_DRIVE_SPEED);
     		Timer.delay(.2);
+    		
     		//to autozone
     		AutoDrive.turnRight(70, .8);
-//    		AutoDrive.goFoward(400, AUTO_DRIVE_SPEED);
     		Timer.delay(.1);
-    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2.4), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.4), AUTO_DRIVE_FAST_SPEED);
 //    		AutoDrive.sycnToteSpewAlign();
-//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.syncToteStackerLiftDown();
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.6), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.exeSrvc.execute(new Runnable() {
 				public void run() {
 		    		AutoDrive.spitTote();
 				}});
-//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.2), AUTO_DRIVE_FAST_SPEED);
-    		
-//    		AutoDrive.liftAndGoToNextTote(AutoDrive.TOTE_TO_TOTE_DISTANCE, AUTO_DRIVE_SPEED);
-//    		AutoDrive.liftAndGoToNextTote(AUTO_DRIVE_SPEED);
-//    		AutoDrive.syncToteStackerLiftDownAndTo(1);
-//    		AutoDrive.intakeTote();
-//    		AutoDrive.syncToteStackerLiftDown();
-//    		AutoDrive.turnRight(90);
-//    		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE, 90, AUTO_DRIVE_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.7), AUTO_DRIVE_FAST_SPEED);
     		break;
     	case 21: //3 tote + 1 bin
     		//two tote

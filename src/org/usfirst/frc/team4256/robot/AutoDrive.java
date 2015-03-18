@@ -79,12 +79,12 @@ public class AutoDrive {
     	Robot.enableBreakMode(true);
 		AutoDrive.syncRecycleBinAndToteIntake();
 //		Timer.delay(.2);
-		AutoDrive.goFoward(120, Robot.AUTO_DRIVE_SPEED);
-		Timer.delay(.3);
+		AutoDrive.goFoward((int) (TOTE_TO_TOTE_DISTANCE*.073), Robot.AUTO_DRIVE_SPEED);//.25//120
+		Timer.delay(.5);//.8
 		AutoDrive.syncToteStackerLiftDownAndTo(1);
-		AutoDrive.turnLeft(165, .57);//170 (was working until 3/16)
+		AutoDrive.turnLeft(170, .57);//170 (was working until 3/16)
 		Timer.delay(.4);
-		AutoDrive.goToNextTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), Robot.AUTO_DRIVE_SPEED);
+		AutoDrive.goToNextTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), Robot.AUTO_DRIVE_SPEED);//.98
 		AutoDrive.syncToteIntake();
     }
     
@@ -108,8 +108,10 @@ public class AutoDrive {
 //		turnLeft(45);
 		if(steerLeft) {
 //			goSidewaysLeft((int) (STEER_DISTANCE*1.3), .7);
-			goSidewaysLeftTimeBased(.8, .77);
-			goFoward(TOTE_TO_TOTE_DISTANCE/2, speed);//800
+//			goSidewaysLeftTimeBased(1.4, .3, 1);//.8, 0, .77
+			goSidewaysLeftTimeBased(.8, 0, .77);
+			goSidewaysLeftTimeBased(.4, speed, 0);
+//			goFoward(TOTE_TO_TOTE_DISTANCE/2, speed);//800
 			openArms();
 			Timer.delay(.2);
 //			exeSrvc.execute(new Runnable() {
@@ -120,13 +122,12 @@ public class AutoDrive {
 //					Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
 //				}});
 			Robot.wheelIntake.set(Robot.WHEEL_INTAKE_SPEED);
-			goSidewaysRight((int) (STEER_DISTANCE*1.5), .7);//+700
+//			goSidewaysRight((int) (STEER_DISTANCE*1.5), .7);
+			goSidewaysRightTimeBased(1.0, 0, .77);//1.3
 //			turnRight(5);
 			Robot.wheelIntake.set(0);
 		}else{
-			goSidewaysRight(STEER_DISTANCE, speed);
-			goFoward(200, speed);
-			goSidewaysLeft(STEER_DISTANCE, speed);
+			
 		}
 		Timer.delay(.1);
 		goFoward((int) (TOTE_TO_TOTE_DISTANCE*.7), speed);//600
@@ -241,14 +242,14 @@ public class AutoDrive {
 	
 	////////////////TIME BASED DRIVE////////////////
 	
-	public static void goSidewaysLeftTimeBased(double seconds, double speed) {
-		goSidewaysRightTimeBased(seconds, -speed);
+	public static void goSidewaysLeftTimeBased(double seconds, double fwdSpeed, double sideSpeed) {
+		goSidewaysRightTimeBased(seconds, fwdSpeed, -sideSpeed);
 	}
 	
-	public static void goSidewaysRightTimeBased(double seconds, double speed) {
+	public static void goSidewaysRightTimeBased(double seconds, double fwdSpeed, double sideSpeed) {
 		long startTime = System.currentTimeMillis();
 		while(System.currentTimeMillis()-startTime<seconds*1000) {
-			Robot.drive.mecanumDrive_Cartesian(speed, 0, 0, 0);
+			Robot.drive.mecanumDrive_Cartesian(sideSpeed, -fwdSpeed, 0, 0);
 		}
 		Robot.drive.mecanumDrive_Cartesian(0, 0, 0, 0);
 	}

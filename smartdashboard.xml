@@ -13,7 +13,7 @@
 		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\blue_dot.png"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
-		<location x="518" y="8"/>
+		<location x="518" y="7"/>
 		<width>950</width>
 		<height>568</height>
 		<property name="Image File" value="C:\Users\frc1\Documents\GitHub\FRC-2015-Competition\line.png"/>
@@ -145,7 +145,7 @@
 		<location x="2" y="30"/>
 	</widget>
 	<widget field="AUTONOMOUS MODE" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1575" y="313"/>
+		<location x="1573" y="313"/>
 		<height>25</height>
 	</widget>
 	<widget field="Arm Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
