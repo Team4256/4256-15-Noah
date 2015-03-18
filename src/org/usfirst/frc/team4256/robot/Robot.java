@@ -283,7 +283,7 @@ public class Robot extends IterativeRobot {
     		//first two totes
     		AutoDrive.recycleBinAndTwoTote();
     		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
-    		//AutoDrive.sycnToteSpewAlign();
+//    		AutoDrive.sycnToteSpewAlign();
     		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
     		//3rd tote
     		AutoDrive.syncToteStackerLiftDownAndTo(1.08);
@@ -292,17 +292,21 @@ public class Robot extends IterativeRobot {
     		AutoDrive.syncToteIntake();
     		Timer.delay(.3);
     		AutoDrive.goFoward(120, AUTO_DRIVE_SPEED);
+    		Timer.delay(.2);
     		//to autozone
-    		AutoDrive.turnRight(42, .8);
+    		AutoDrive.turnRight(70, .8);
 //    		AutoDrive.goFoward(400, AUTO_DRIVE_SPEED);
-    		AutoDrive.sycnToteSpewAlign();//here
     		Timer.delay(.1);
-    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2.6), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2.4), AUTO_DRIVE_FAST_SPEED);
+//    		AutoDrive.sycnToteSpewAlign();
+//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.syncToteStackerLiftDown();
-    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.8), AUTO_DRIVE_FAST_SPEED);
-//    		AutoDrive.turnRight(60, 1);
-    		AutoDrive.spitTote();
-    		AutoDrive.goReverse(300, AUTO_DRIVE_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.6), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.exeSrvc.execute(new Runnable() {
+				public void run() {
+		    		AutoDrive.spitTote();
+				}});
+//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.2), AUTO_DRIVE_FAST_SPEED);
     		
 //    		AutoDrive.liftAndGoToNextTote(AutoDrive.TOTE_TO_TOTE_DISTANCE, AUTO_DRIVE_SPEED);
 //    		AutoDrive.liftAndGoToNextTote(AUTO_DRIVE_SPEED);

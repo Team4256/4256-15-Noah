@@ -108,7 +108,7 @@ public class AutoDrive {
 //		turnLeft(45);
 		if(steerLeft) {
 //			goSidewaysLeft((int) (STEER_DISTANCE*1.3), .7);
-			goSidewaysLeftTimeBased(.8, .7);
+			goSidewaysLeftTimeBased(.8, .77);
 			goFoward(TOTE_TO_TOTE_DISTANCE/2, speed);//800
 			openArms();
 			Timer.delay(.2);
