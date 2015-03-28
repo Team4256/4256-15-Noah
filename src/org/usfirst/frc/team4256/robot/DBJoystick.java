@@ -30,6 +30,7 @@ public class DBJoystick extends Joystick {
 		return deadband(super.getRawAxis(axis));
 	}
 	
+	
 	public boolean axisPressed(int axis) {
 		return super.getRawAxis(axis) > DETENT;
 	}

@@ -69,7 +69,7 @@ public class Robot extends IterativeRobot {
 	Toggle lightToggle = new Toggle(xboxgun, 10);
 	Toggle switchToggle = new Toggle(xboxdrive, 4);
 	Toggle atToggle = new Toggle(xboxdrive, 9);
-	
+	//Toggle liftToggle = new Toggle(xboxgun, 4);
 	AnalogInput PressureGauge = new AnalogInput(0);
 	
 	TimedEvent rumbleAlert = new TimedEvent(10, 9, true) {
@@ -161,14 +161,14 @@ public class Robot extends IterativeRobot {
     	int mode = (int) SmartDashboard.getNumber("AUTONOMOUS MODE");
     	switch(mode) {
     	case 0: //lift recycle bin
-    		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.95, -1);//2.42 before motor change
 ////    	AutoDrive.turnRight(90);
 //    		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
 //    		AutoDrive.turnLeft(120);
     		break;
     	case 1: //single recycle bin and turn
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 55, AUTO_DRIVE_SPEED);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 27, AUTO_DRIVE_SPEED);
     		break;
     	case 2: //single tote + recyle bin
     		AutoDrive.syncRecycleBinAndToteIntake();
@@ -178,7 +178,7 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE*1.5, 55, AUTO_DRIVE_SPEED);
     		break;
     	case 3: //Recycle Bin (Drive Straight) 
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE, 0, AUTO_DRIVE_SPEED);
     		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*.95), AUTO_DRIVE_SPEED);
     		break;
@@ -186,10 +186,10 @@ public class Robot extends IterativeRobot {
 //    		AutoDrive.syncRecycleBin(3.42);
 //    		Timer.delay(.4);
 //    		AutoDrive.goSidewaysLeft(800, AUTO_DRIVE_SPEED);
-    		AutoDrive.moveMotorTimeBased(verticalLift, 3.5, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.3, -1);//3.5 before motor change
     		AutoDrive.turnLeft(20);
     		Timer.delay(.2);
-    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*2), AUTO_DRIVE_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*1.6), AUTO_DRIVE_SPEED); // was 2 on robot #2 at wca
     		
 //    		Timer.delay(1.0);
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*2, 90, AUTO_DRIVE_SPEED); // was +800.
@@ -209,31 +209,33 @@ public class Robot extends IterativeRobot {
     		break;
     	case 6: //(right side) single recycle bin to right side auto
     		enableBreakMode(true);
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goSidewaysLeft((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*0.5), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
+//    		AutoDrive.goSidewaysLeft((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*0.5), AUTO_DRIVE_FAST_SPEED); encoder based
+    		AutoDrive.goSidewaysLeftTimeBased(.5, 0, AUTO_DRIVE_FAST_SPEED); //time based for 15.5 inch side shift
     		Timer.delay(0.2);
     		AutoDrive.turnRight(25);
     		Timer.delay(.2);
-    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*2.2), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*1.5), AUTO_DRIVE_FAST_SPEED); //was 2.2 for robot #2 at wca
     		AutoDrive.turnRight(70);
     		break;
     	case 7: //two totes + recycle bin
     		AutoDrive.recycleBinAndTwoTote();
     		Timer.delay(.5);
-    		AutoDrive.goReverse((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*1.3), AUTO_DRIVE_SPEED);
-    		AutoDrive.turnLeft(105, .8);
+    		AutoDrive.goReverse((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*0.8), AUTO_DRIVE_SPEED);// 3/20 changed from 1.1 to 0.8 (1.1 backs up into RBin)
+    		AutoDrive.turnLeft(95, .5042);
+    		AutoDrive.sycnToteSpewAlign();
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE*2, 80, AUTO_DRIVE_SPEED);
     		break;
     	case 8: //single totes + recycle bin (same section)
     		AutoDrive.intakeTote();
     		AutoDrive.turnRight(180);
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
     		AutoDrive.turnLeft(90);
     		AutoDrive.goFowardToAutozoneAndDeploy(true, AutoDrive.AUTOZONE_DISTANCE+1800, 90, AUTO_DRIVE_SPEED);
     		break;
     	case 9: //3 grey tote + recyle bin (over close bump)
     		//does 1 tote so far
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
     		AutoDrive.goFoward(200, AUTO_DRIVE_SPEED);
     		Timer.delay(.5);
     		AutoDrive.turnRight(80);
@@ -245,14 +247,15 @@ public class Robot extends IterativeRobot {
     		AutoDrive.goFoward(200, .3);
     		break;
     	case 10: //lift recycle bin and go to feed
-    		AutoDrive.moveMotorTimeBased(verticalLift, 2.42, -1);
-    		AutoDrive.turnRight(90);
-    		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
-    		AutoDrive.turnLeft(120);
+//    		AutoDrive.moveMotorTimeBased(verticalLift, 0.95, -1);//2.42 before motor change
+//    		AutoDrive.turnRight(90);
+//    		AutoDrive.goFoward(600, AUTO_DRIVE_SPEED);
+//    		AutoDrive.turnLeft(120);
     		break;
     	case 11: //center recycle bin to far left side
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//1.9 before motor change
+//    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
+    		AutoDrive.goSidewaysLeftTimeBased(1, 0, AUTO_DRIVE_FAST_SPEED); //time based for 31 inch side shift (tote to tote distance)
     		AutoDrive.turnLeft(35);
     		Timer.delay(0.5);
     		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*1.86), AUTO_DRIVE_SPEED); //AutoZone distance + 1900 (Arkansas)
@@ -264,17 +267,30 @@ public class Robot extends IterativeRobot {
     		
     		break;
     	case 12: //center recyle bin to center field
-    		AutoDrive.moveMotorTimeBased(verticalLift, 1.9, -1);
-    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
-    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.2, 74, AUTO_DRIVE_SPEED);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.8, -1);//was 1.9 before vlift motor change
+//    		AutoDrive.goSidewaysLeft(AutoDrive.TOTE_TO_TOTE_DISTANCE, 0.8);
+    		AutoDrive.goSidewaysLeftTimeBased(1.25, 0, AUTO_DRIVE_FAST_SPEED); //time based for 31 inch side shift (tote to tote distance)
+    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.4, 27, AUTO_DRIVE_SPEED);//was 1.2, 74deg but short robot #1
     		AutoDrive.goFoward((int) (AutoDrive.AUTOZONE_DISTANCE*.6), AUTO_DRIVE_SPEED);
     		break;
-    	case 15:
-    		enableBreakMode(true);
-    		AutoDrive.turnRight(360, .8);
+    	case 14: //left side, recyle bin, turn right
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.95, -1);//2.42 before motor change
+    		AutoDrive.turnRight(60);
     		break;
+    	case 15: //right side, recyle bin, turn left (we want to rotate opposite direction to face bin towards the feeder station -Alex)
+    		AutoDrive.moveMotorTimeBased(verticalLift, 0.95, -1);//2.42 before motor change
+    		AutoDrive.turnLeft(60);
+    		break;
+//    	case 16:
+//    		enableBreakMode(true);
+//    		AutoDrive.turnLeft(170, .57);
+//    		break;
+//    	case 17: //tote lift, left sideways
+//    		AutoDrive.moveMotorTimeBased(verticalLift, 0.95, -1);//2.42 before motor change
+//    		AutoDrive.goSidewaysLeftTimeBased(5, 0, 0.5);
+//    		break;
     	case 18:
-    		AutoDrive.moveMotorTimeBased(verticalLift, 3.42, -1);
+    		AutoDrive.moveMotorTimeBased(verticalLift, 1.25, -1);//3.42 before motor change
     		AutoDrive.goSidewaysLeft((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*0.5), AUTO_DRIVE_FAST_SPEED);
     		AutoDrive.turnLeft(145);
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*2), AUTO_DRIVE_SPEED);
@@ -360,7 +376,46 @@ public class Robot extends IterativeRobot {
     		AutoDrive.spitTote();
     		AutoDrive.goReverse(100, AUTO_DRIVE_SPEED);
     		break;
+    	case 23: //3 tote + 1 bin (needs right bin removed)
+    		//first two totes
+    		AutoDrive.recycleBinAndTwoTote();
+//    		AutoDrive.goFowardAndAlignToTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);//align
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
+//    		AutoDrive.sycnToteSpewAlign();
+    		AutoDrive.syncToteStackerLiftDownAndTo(1.08);
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);
+    		
+    		//3rd tote
+    		AutoDrive.openArms();
+    		Timer.delay(.2);
+    		AutoDrive.goSidewaysLeftTimeBased(0.2, 0, .5);
+    		Timer.delay(.1);
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*1.2), AUTO_DRIVE_SPEED);//2.2
+//    		AutoDrive.goFowardAndAlignToTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.4), AUTO_DRIVE_SPEED);//2.2
+//    		Timer.delay(.2);
+    		AutoDrive.syncToteIntake();
+    		Timer.delay(.3);
+    		AutoDrive.goFoward((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.1), AUTO_DRIVE_SPEED);//.7
+    		Timer.delay(.2);
+    		
+    		//to autozone
+    		AutoDrive.turnRight(70, .8);
+    		Timer.delay(.1);
+    		AutoDrive.sycnToteSpewAlign();
+//    		Timer.delay(.5);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.4), AUTO_DRIVE_FAST_SPEED);
+//    		AutoDrive.sycnToteSpewAlign();
+    		AutoDrive.syncToteStackerLiftDown();
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.6), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.exeSrvc.execute(new Runnable() {
+				public void run() {
+		    		AutoDrive.spitTote();
+				}});
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.7), AUTO_DRIVE_FAST_SPEED);
+    		break;
     	default:
+//    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.4, 27, AUTO_DRIVE_SPEED);//was 1.2, 74deg but short robot #1
+//    		AutoDrive.goFoward(500, 0.5*AUTO_DRIVE_SPEED);
 //    		AutoDrive.goFoward(1000, AUTO_DRIVE_SPEED);
 //    		AutoDrive.goSidewaysLeft(5000, AUTO_DRIVE_SPEED);
 //    		AutoDrive.syncToteStackerLiftDownAndTo(1);
@@ -481,6 +536,7 @@ public class Robot extends IterativeRobot {
     public void verticalLift(DBJoystick joystick) {
     	//sets speed and limit switch check variables based on what button is pressed
     	int joystickPOV = joystick.getPOV();
+    	double verticalLiftSpeedScale = (xboxgun.getRawButton(5)? 0.5 : 1.0);
     	if(joystickPOV == DBJoystick.NORTH || joystickPOV == DBJoystick.NORTH_WEST || joystickPOV == DBJoystick.NORTH_EAST ) { // xboxgun dpad (haven't found button (or in this case POV) inputs) will control direction of vertical lift. Up ascends the lift to the maximum height, down descends the lift to the minimum height.
     		automaticLift = false;
     		raiseVertOutput();
@@ -507,7 +563,7 @@ public class Robot extends IterativeRobot {
     	
     	//stops if the limit switch is pressed
     	if(vertLiftCurrentLimitSwitch.get()) {
-    		verticalLift.set(vertLiftCurrentSpeed);
+    		verticalLift.set(vertLiftCurrentSpeed*verticalLiftSpeedScale);
     	}else{
     		vertLiftCurrentSpeed = 0;
     		verticalLift.set(0);

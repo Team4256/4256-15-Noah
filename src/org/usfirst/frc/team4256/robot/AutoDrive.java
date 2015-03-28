@@ -18,17 +18,21 @@ public class AutoDrive {
 	
 	//private static int TOTE_TO_TOTE_DISTANCE = 2750; //2ft 9 inches	-calculated by mr ies's expertise
 //	private static int TOTE_TO_TOTE_DISTANCE = 1400; //comp arkansas robot #1 omni wheels
-	public static int TOTE_TO_TOTE_DISTANCE = 1650;//1850
+//	public static int TOTE_TO_TOTE_DISTANCE = 1650;//robot #2 at wcastl
+	public static int TOTE_TO_TOTE_DISTANCE = 1575;//comp st louis robot #1
+
 
 //	public static int AUTOZONE_DISTANCE = 4200; //pre comp old don't use me
 //	public static int AUTOZONE_DISTANCE = 2200; //comp arkansas robot #1 omni wheels
-	public static int AUTOZONE_DISTANCE = 3200; //comp st louis mecanum wheels
+	//public static int AUTOZONE_DISTANCE = 3200; //wcastl mecanum wheels robot #2
+	public static int AUTOZONE_DISTANCE = 3010; //comp st louis mecanum wheels robot #1
+
 	
     public static ExecutorService exeSrvc = Executors.newCachedThreadPool();
 	
     ////////////////SYNCHRONIZED MOVES////////////////
     public static void syncRecycleBinAndToteIntake() {
-    	syncRecycleBin(1.9);
+    	syncRecycleBin(0.75);
 		syncToteIntake();
 		Timer.delay(1); //1.5 seconds less than tote intake time!
     }
@@ -82,7 +86,7 @@ public class AutoDrive {
 		AutoDrive.goFoward((int) (TOTE_TO_TOTE_DISTANCE*.073), Robot.AUTO_DRIVE_SPEED);//.25//120
 		Timer.delay(.5);//.8
 		AutoDrive.syncToteStackerLiftDownAndTo(1);
-		AutoDrive.turnLeft(170, .57);//170 (was working until 3/16)
+		AutoDrive.turnLeft(164, .57);//170 (was working until 3/16)
 		Timer.delay(.4);
 		AutoDrive.goToNextTote((int) (AutoDrive.TOTE_TO_TOTE_DISTANCE*.8), Robot.AUTO_DRIVE_SPEED);//.98
 		AutoDrive.syncToteIntake();
@@ -135,7 +139,9 @@ public class AutoDrive {
 	
 	public static void goFowardToAutozoneAndDeploy(boolean deployTotes, double distance, double turnAngle, double speed) {
 		goFoward((int) (distance), speed);
-		AutoDrive.syncToteStackerLiftDown();
+		if(deployTotes) {
+			AutoDrive.syncToteStackerLiftDown();
+		}
 		Timer.delay(.5);
 		turnRight(turnAngle, .8);
 		if(deployTotes) {
@@ -257,8 +263,9 @@ public class AutoDrive {
     ////////////////ENCODER BASED DRIVE////////////////
     static int ENC_ACCURACY_RANGE = 10;
 //    static int RIGHT_ANGLE_TURN_TICKS = 1396;//omni wheels arkansas
-    static int RIGHT_ANGLE_TURN_TICKS = 2370;//mecanum wheels
-    
+    //static int RIGHT_ANGLE_TURN_TICKS = 2370;//mecanum wheels robot #2 at wca
+    static int RIGHT_ANGLE_TURN_TICKS = 2440;//mecanum wheels st louis regional
+
     static double TURN_SPEED = .342;
     
     public static void goFoward(int ticks, double speed) {
