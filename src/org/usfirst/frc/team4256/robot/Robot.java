@@ -42,12 +42,15 @@ public class Robot extends IterativeRobot {
 	static DigitalInput lowerLimitSwitch = new DigitalInput(1);
 	static DigitalInput lowerStackerLimitSwitch = new DigitalInput(3);
 	static DigitalInput upperStackerLimitSwitch = new DigitalInput(2);
+	static DigitalInput hallEffect = new DigitalInput(9);
 	
 	Compressor compressor = new Compressor();
 	
-	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
-//	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 3, 2); //Robot 1
+//	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
+//	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 4, 5);//disabled
 	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+	static DoubleSolenoid recycleBinGrabber = new DoubleSolenoid(0, 0, 1);
 
 	
 	Servo servoX = new Servo(0);
@@ -115,6 +118,8 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());	
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Tick Position", -1000);
+    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
+
     	cameraServos.displayInit();
         
     	//set up Smartboard labels - workaround since can't resize labels - creating text boxes
@@ -413,6 +418,12 @@ public class Robot extends IterativeRobot {
 				}});
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.7), AUTO_DRIVE_FAST_SPEED);
     		break;
+    	case 50: //2 Trash cans from middle
+    		recycleBinGrabber.set(DoubleSolenoid.Value.kForward);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.5), AUTO_DRIVE_FAST_SPEED);
+    		recycleBinGrabber.set(DoubleSolenoid.Value.kReverse);
+    		break;
+	
     	default:
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.4, 27, AUTO_DRIVE_SPEED);//was 1.2, 74deg but short robot #1
 //    		AutoDrive.goFoward(500, 0.5*AUTO_DRIVE_SPEED);
@@ -486,6 +497,8 @@ public class Robot extends IterativeRobot {
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
+    	Utility.runSolenoid(xboxdrive, 7, 8, recycleBinGrabber);
+    	
     	
     	
     	if(SmartDashboard.getNumber("Vertical Tick Position") == -1000){
@@ -502,6 +515,7 @@ public class Robot extends IterativeRobot {
     	//update dashboard
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
+    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
     	double pressureGauge = PressureGauge.getAverageVoltage()*43.14-55.39;
     	SmartDashboard.putNumber("Pressure", roundTo(pressureGauge, 4));
     	double pressureVoltage = PressureGauge.getAverageVoltage();
@@ -602,6 +616,7 @@ public class Robot extends IterativeRobot {
 //    	stackerToteLift.update(-STACKER_TOTE_SPEED);
     	boolean lwrLimitSwitch = lowerStackerLimitSwitch.get();
     	boolean upperLimitSwitch = upperStackerLimitSwitch.get();
+    	boolean hallEffectSwitch = !hallEffect.get();
 //    	if(xboxgun.getRawButton(7)) {
 //    		stackerGoingToLevel = true;
 //    		//reset feed stage if not currently running
@@ -627,12 +642,13 @@ public class Robot extends IterativeRobot {
 //    		}
 //    		stackerGoingToLevel = false;
 //    	}else{
-    		Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && upperLimitSwitch, stackerToteLift, STACKER_TOTE_SPEED);
+    		Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && (upperLimitSwitch && hallEffectSwitch), stackerToteLift, STACKER_TOTE_SPEED);
 //    	}
 
         SmartDashboard.putBoolean("Upper Tote Stacker Limit Switch", upperLimitSwitch);
         SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lwrLimitSwitch);
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
+    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
     }
     
     /**
