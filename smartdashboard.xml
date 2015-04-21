@@ -1,7 +1,9 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Hall Effect" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="408"/>
+	<widget field="Hall Effect" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.BooleanBox">
+		<location x="208" y="582"/>
+		<width>148</width>
+		<height>57</height>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Image">
 		<location x="1453" y="9"/>
@@ -352,7 +354,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="P"/>
-	<hidden field="D"/>
-	<hidden field="I"/>
 </xml>

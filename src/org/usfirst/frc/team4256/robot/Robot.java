@@ -46,12 +46,12 @@ public class Robot extends IterativeRobot {
 	
 	Compressor compressor = new Compressor();
 	
-//	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
-//	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
-	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 4, 5);//disabled
+	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
+	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+/*	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 4, 5);//disabled
 	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
 	static DoubleSolenoid recycleBinGrabber = new DoubleSolenoid(0, 0, 1);
-
+*/
 	
 	Servo servoX = new Servo(0);
 	Servo servoY = new Servo(1);
@@ -418,12 +418,23 @@ public class Robot extends IterativeRobot {
 				}});
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.7), AUTO_DRIVE_FAST_SPEED);
     		break;
-    	case 50: //2 Trash cans from middle
-    		recycleBinGrabber.set(DoubleSolenoid.Value.kForward);
-    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.5), AUTO_DRIVE_FAST_SPEED);
-    		recycleBinGrabber.set(DoubleSolenoid.Value.kReverse);
+    	case 50: //2 Trash cans from middle (fast)
+    		enableBreakMode(true);
+    		AutoDrive.openArms();
+    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED);
+    		Timer.delay(1);
+//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.1), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.4), 0.5);
+ //   		AutoDrive.closeArms();
+    		
+ //   		Timer.delay(.4);
+ //   		AutoDrive.goSidewaysLeftTimeBased(.2, 0, .25);
+ //   		AutoDrive.goSidewaysLeftTimeBased(5, 0, .5);
+ //   		AutoDrive.goSidewaysLeftTimeBased(.2, 0, .25);
     		break;
-	
+    	case 51: //2 Trash cans from middle (slow)
+    		
+    		break;
     	default:
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.4, 27, AUTO_DRIVE_SPEED);//was 1.2, 74deg but short robot #1
 //    		AutoDrive.goFoward(500, 0.5*AUTO_DRIVE_SPEED);
@@ -497,7 +508,7 @@ public class Robot extends IterativeRobot {
     	Utility.runMotor((joystick.getRawButton(1) || joystick.getRawButton(2)), joystick.getRawButton(3), toteRoller, TOTE_ROLLER_SPEED);
     	Utility.runMotor(joystick, 3, 1, wheelIntake, WHEEL_INTAKE_SPEED);
     	Utility.runLED(lightToggle, light);
-    	Utility.runSolenoid(xboxdrive, 7, 8, recycleBinGrabber);
+    	//Utility.runSolenoid(xboxdrive, 7, 8, recycleBinGrabber);
     	
     	
     	
