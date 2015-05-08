@@ -42,12 +42,14 @@ public class Robot extends IterativeRobot {
 	static DigitalInput lowerLimitSwitch = new DigitalInput(1);
 	static DigitalInput lowerStackerLimitSwitch = new DigitalInput(3);
 	static DigitalInput upperStackerLimitSwitch = new DigitalInput(2);
-	static DigitalInput hallEffect = new DigitalInput(9);
+	//static DigitalInput hallEffect = new DigitalInput(9);
 	
 	Compressor compressor = new Compressor();
 	
 	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 0, 1);
 	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
+	static DoubleSolenoid leftHook = new DoubleSolenoid(0, 4, 5);
+	static DoubleSolenoid rightHook = new DoubleSolenoid(0, 6, 7);
 /*	static DoubleSolenoid leftArm = new DoubleSolenoid(0, 4, 5);//disabled
 	static DoubleSolenoid rightArm = new DoubleSolenoid(0, 2, 3);
 	static DoubleSolenoid recycleBinGrabber = new DoubleSolenoid(0, 0, 1);
@@ -67,7 +69,8 @@ public class Robot extends IterativeRobot {
 	static ExtendedVictorSP toteRoller = new ExtendedVictorSP(7);
 	static RobotDrive drive = new RobotDrive(leftFront, leftBack, rightFront, rightBack);
 	
-	Toggle armToggle = new Toggle(null, 6);
+	static Toggle armToggle = new Toggle(null, 6);
+	static Toggle hookToggle = new Toggle(null, 5);
 //	Toggle intakeToggle = new Toggle(xboxgun, 5);
 	Toggle lightToggle = new Toggle(xboxgun, 10);
 	Toggle switchToggle = new Toggle(xboxdrive, 4);
@@ -118,7 +121,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());	
     	SmartDashboard.putNumber("Vertical Lift Encoder", verticalLift.getEncPosition());
     	SmartDashboard.putNumber("Vertical Tick Position", -1000);
-    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
+    	//SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
 
     	cameraServos.displayInit();
         
@@ -421,9 +424,11 @@ public class Robot extends IterativeRobot {
     	case 50: //2 Trash cans from middle (fast)
     		enableBreakMode(true);
     		AutoDrive.openArms();
-    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED);
+    		AutoDrive.goSidewaysLeftTimeBased(.2, AUTO_DRIVE_SPEED, 0);
+//    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED); //moved 3.25 inches avg (3.5 l, 3 r)
     		Timer.delay(1);
 //    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.1), AUTO_DRIVE_FAST_SPEED);
+   // 		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.6), 0.8);
     		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.4), 0.5);
  //   		AutoDrive.closeArms();
     		
@@ -432,8 +437,28 @@ public class Robot extends IterativeRobot {
  //   		AutoDrive.goSidewaysLeftTimeBased(5, 0, .5);
  //   		AutoDrive.goSidewaysLeftTimeBased(.2, 0, .25);
     		break;
-    	case 51: //2 Trash cans from middle (slow)
-    		
+    	case 51: 
+    		enableBreakMode(true);
+    		AutoDrive.openArms();
+    		Timer.delay(.3);
+    		AutoDrive.goFoward(150, AUTO_DRIVE_SPEED);
+    		Timer.delay(.2);
+    		AutoDrive.turnLeft(3, .3);
+    		Timer.delay(.2);
+    		AutoDrive.turnRight(6, .3);
+    		Timer.delay(.2);
+    		AutoDrive.turnLeft(3, .3);
+    		Timer.delay(.5);
+//    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.1), AUTO_DRIVE_FAST_SPEED);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*1.4), 0.5);
+ //   		AutoDrive.closeArms();
+    		break;
+    	case 52:
+    		enableBreakMode(true);
+    		AutoDrive.openArms();
+    		AutoDrive.goSidewaysLeftTimeBased(.2, AUTO_DRIVE_SPEED, 0);
+    		Timer.delay(1);
+    		AutoDrive.goReverse((int) (AutoDrive.AUTOZONE_DISTANCE*.1), 0.5);
     		break;
     	default:
 //    		AutoDrive.goFowardToAutozoneAndDeploy(false, AutoDrive.AUTOZONE_DISTANCE*1.4, 27, AUTO_DRIVE_SPEED);//was 1.2, 74deg but short robot #1
@@ -526,7 +551,7 @@ public class Robot extends IterativeRobot {
     	//update dashboard
     	SmartDashboard.putBoolean("Upper Limit Switch", upperLimitSwitch.get());
     	SmartDashboard.putBoolean("Lower Limit Switch", lowerLimitSwitch.get());
-    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
+    	//SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
     	double pressureGauge = PressureGauge.getAverageVoltage()*43.14-55.39;
     	SmartDashboard.putNumber("Pressure", roundTo(pressureGauge, 4));
     	double pressureVoltage = PressureGauge.getAverageVoltage();
@@ -627,7 +652,7 @@ public class Robot extends IterativeRobot {
 //    	stackerToteLift.update(-STACKER_TOTE_SPEED);
     	boolean lwrLimitSwitch = lowerStackerLimitSwitch.get();
     	boolean upperLimitSwitch = upperStackerLimitSwitch.get();
-    	boolean hallEffectSwitch = !hallEffect.get();
+    	//boolean hallEffectSwitch = !hallEffect.get();
 //    	if(xboxgun.getRawButton(7)) {
 //    		stackerGoingToLevel = true;
 //    		//reset feed stage if not currently running
@@ -653,13 +678,13 @@ public class Robot extends IterativeRobot {
 //    		}
 //    		stackerGoingToLevel = false;
 //    	}else{
-    		Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && (upperLimitSwitch && hallEffectSwitch), stackerToteLift, STACKER_TOTE_SPEED);
+    		Utility.runMotor(joystick.axisPressed(2) && lwrLimitSwitch, joystick.axisPressed(3) && (upperLimitSwitch), stackerToteLift, STACKER_TOTE_SPEED);
 //    	}
 
         SmartDashboard.putBoolean("Upper Tote Stacker Limit Switch", upperLimitSwitch);
         SmartDashboard.putBoolean("Lower Tote Stacker Limit Switch", lwrLimitSwitch);
     	SmartDashboard.putNumber("Stacker Encoder", stackerToteLift.getEncPosition());
-    	SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
+    	//SmartDashboard.putBoolean("Hall Effect", !hallEffect.get());
     }
     
     /**
@@ -670,6 +695,10 @@ public class Robot extends IterativeRobot {
     	boolean armToggleState = armToggle.getState(joystick);
     	Utility.runSolenoid(armToggleState, leftArm);
     	Utility.runSolenoid(armToggleState, rightArm);
+    	
+    	boolean hookToggleState = hookToggle.getState(joystick);
+    	Utility.runSolenoid(hookToggleState, leftHook);
+    	Utility.runSolenoid(hookToggleState, rightHook);
 
     	SmartDashboard.putBoolean("Arm Intake", armToggleState);
     	

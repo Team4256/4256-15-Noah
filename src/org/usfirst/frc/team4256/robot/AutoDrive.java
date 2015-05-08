@@ -176,6 +176,7 @@ public class AutoDrive {
     }
 	
 	public static void openArms() {
+		Robot.armToggle.state = true;
 		Robot.leftArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
 		Robot.rightArm.set(edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward);
 	}

@@ -7,7 +7,7 @@ public class Toggle {
 	private int button;
 	private boolean value = false;
 	private boolean lastValue = false;
-	private boolean state = false;
+	boolean state = false;
 	
 	
 	public Toggle(Joystick joystick, int button) {
